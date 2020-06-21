@@ -1,0 +1,40 @@
+---
+title: "Cross validating a deductive dictionary for corpus linguistical analysis with polmineR"
+author: "Kevin Glock"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+fontsize: "11pt"
+fontstyle: "Arial"
+lang: "en"
+linkcolor: black
+citecolor: black
+subtitle: "Methodological pre-Study"
+always_allow_html: yes
+toc: yes
+urlcolor: black
+encoding: "UTF-8"
+---
+## Glossary of Terms
+
+English terms                 | German terms
+----------------------------- | -----------------------------------------------
+Nationality Act	              | Staatsangehörigkeitsgesetz
+Citizenship Act               | Staatsbürgerschaftsgesetz
+Foreigners’ Policy            | Ausländerpolitik
+Ethnic German resetteler      | Russlanddeutsche/Aussiedler / etnisch Deutsche
+resident                      | Aufenthalt
+
+
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction
+
+In order to investigate the changes in the linguistic contextualization of citizenship based on plenary protocols of the German _Bundestag_, the paper in hand presents a corpus linguistical approach to cross-validate a deductive formulated citizenship dictionary with LDA topic modelling. The aim is to classify the linguistic contextualisation of the citizenship topic by parliamentary parties in the German _Bundestag_ between 1996 and 2016. This paper serves as the methodological pre-study for the Bachelor´s thesis “The parliamentary discourse on citizenship in Germany between 1996 and 2016: A corpus linguistical context analysis of the concept of citizenship in R”. The thesis examines plenary speeches to identify convergences and divergences between parliamentary parties regarding their lingusitic contextualisation of citizenship issues over time.
+This paper therefore presents a deductively outworked dictionary and applies it on a keyword-in-context (kwic) analysis to qualitatively detect permutations’ contexts, as well as extract all variations of search words, to use regexed forms. In a third step an LDA topic model is applied to cross-validate the citizenship related terms with a stochastical approach. Three questions will be answered:

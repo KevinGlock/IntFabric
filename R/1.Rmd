@@ -1,0 +1,56 @@
+---
+title: 'Falsified Interviews Detection'
+subtitle: 'Gibt es verdächtige Interviewer im ESS Round1 DE?'
+always_allow_html: yes
+toc: yes
+encoding: "UTF-8"
+author: "Kevin Glock"
+affiliation: "Otto-Friedrich-Universität Bamberg"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
+output: html_document
+lang: "de"
+---
+
+abstract: "This paper discusses and applies methods to detect falified interviews in the ESS Round 1 data for Germany."
+
+Kevin.glock@stud.uni-bamberg.de, Master in Survey-Statistics, 1. Fachsemester, BA066143
+
+Lehrstuhl für Soziologie, insbes. Survey-Methodologie, Standort: Bamberg/Berlin/Trier, Sommersemester 2020, Seminar: Datenerhebung & Fehlerquellen, Prüfer: Name Herr Prof. Dr. Mark Trappmann
+
+
+
+```{r, echo=T}
+# load library
+
+library(foreign)
+library(haven)
+# get data
+
+part_data <- read_spss("C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/10_Hausarbeit/data/ESS1DE.sav")
+
+int_data <- read_spss("C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/10_Hausarbeit/data/ESS1cfDE.por")
+
+# get variable names
+options(max.print = 1303)
+set1 <- as.data.frame(part_data)
+View(set1) # the date is 2018 because of the integrated file, originally the interviews took place in 2002
+
+set2 <- as.data.frame(int_data)
+View(set2) # contact form data (meta information about the interviewer and the interview procedure)
+
+lab1 <- data.frame(matrix((variable.names(set1)), ncol = 22)) # it is not a sufficient matrix with variables, but a more tidy as a simple data.frame
+lab2 <- data.frame(matrix((variable.names(set2)), ncol = 22))
+View(lab1)
+View(lab2)
+# 1303 var. in data + 195 in interviewer survey
+
+
+# How many participants?
+
+length(set1[,"idno"]) #2919 obs.
+
+length(set2[,"IDNO"]) #5796 respo.
+
+```
+
+ende

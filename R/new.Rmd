@@ -1,0 +1,211 @@
+---
+title: "Fabricated Interviews Detection"
+subtitle: "Gibt es verdächtige Interviewer im ESS Round1 DE?"
+encoding: "UTF-8"
+author: "Kevin Glock, Master in Survey-Statistics, 1. FS"
+num: "BA066143"
+email: "kevin.glock@stud.uni-bamberg.de"
+org: "Otto-Friedrich-Universität Bamberg"
+corres: "Prof. Dr. Mark Trappmann, Lehrstuhl für Soziologie insbes. Survey-Methodologie; Bamberg"
+abstract: "This paper discusses and applies methods to detect falified interviews in the ESS Round 1 data for Germany."
+date: '`r format(Sys.Date(), "%d.%B %Y")`'
+lang: "de"
+output:
+  html_document:
+    theme: sandstone
+    highlight: textmate
+    code_folding: hide
+    fontsize: "12pt"
+    fontstyle: "Arial"
+    toc: TRUE
+    lot: TRUE
+    toc_depth: 3
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+      number_sections: TRUE
+---
+
+
+```{r setup, include=T}
+knitr::opts_chunk$set(echo = F)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(DT)
+```
+
+
+
+
+
+# Einleitung
+
+Das Aufdecken von gefälschten Interviews stellt ein komplexes Problem in der methodologischen Surveyforschung da (Cite123). Interviewer^[Im Folgenden wird einheitlich und Genderneutral von Interviewer(n) gesprochen. Dabei werden weibliche Interviwerinnen explizit mit eingeschlossen, außer dort wo es sich um tatsächlich männliche Interviewer handelt.] produzieren aus unterschiedlichen Gründen Fälschungen im Rahmen ihrer Tätigkeit. Generell jedoch aus rationalen Gründen der persönlichen Nutzenmaximierung und Kostenreduktion(cite123). Betrachtet man Interviewfabrikation aus psychologischer Sicht, kann diese als eine Art Lügen verstehen. Je nach Reichweite des Fabrikationsbegriffs beabsichtigen Interviewer durch bewusste oder unbewusste Handlungen sich einen persönlichen Vorteil zu ermöglichen, dessen Erlangung ohne Lüge nur mit höherem Aufwand erreichbar wäre beziehungsweise dessen Erfolgswahrscheinlichkeit tendenziell subjektiv geringer ausfällt.
+
+In Anbetracht deutlicher Verzerrungen multivariater Analysen (cite123), die heute zum Standard in der wissenschaftlichen Forschung gehören sind Fabrikate in den Daten schwerwiegend und die Erkennung solcher essenzieller Bestandteil eines guten Qualitätsmanagements in methodologischen Arbeitsbereichen von Umfrageinstituten.
+Versteht man Fabrikationen im psychologischen Kontext als komplexe logische Lügenkonstruktionen wird es nötig diagnostische Denkweisen auf die Daten anzuwenden. Kriminologisch würde man von einem potenziellen Täter sprechen, dessen Taten mit Absichten verbunden sind. Jede Tat hinterlässt dabei Spuren. Um den Täter verstehen zu können muss folglich sein Kommunikationsverhalten genutzt werden, um auf allgemeine Taten induzieren zu können.
+
+Die vorliegende Analyse untersucht ausgehend von diesen Überlegungen den European Social Survey Datensatz der Teilerhebung Deutschland 2002 auf meist wahrscheinliche fabrizierte Interviews, um potenzielle unehrliche Interviewer zu detektieren, die einer weiteren Nachuntersuchung bedürften.
+
+# Forschungsstand
+
+Handbuchempir Sozialforschung
+referenz erster Autor 1945
+Schnell 1991
+Hippler 1979
+Charakteristik und Ausmaß SOEP
+Stylistic Responding
+Differenzen von fake und real data
+Statistische Analyse
+Clusteranalyse
+Automatische Analyse.
+
+# Forschungsfrage
+
+Im Allgemeinen ist die Erkennung die Aktion des Zugriffs auf Informationen ohne spezifische Zusammenarbeit oder Synchronisierung mit dem Absender.
+%In der Geschichte der Funkkommunikation wurde der Begriff "Detektor" erstmals für ein Gerät verwendet, das das einfache Vorhandensein oder Fehlen eines Funksignals erkannte, da alle Kommunikationen im Morsecode waren. Der Begriff wird heute noch verwendet, um eine Komponente zu beschreiben, die ein bestimmtes Signal aus allen vorhandenen elektromagnetischen Wellen extrahiert. Die Erkennung basiert normalerweise auf der Frequenz des Trägersignals, wie bei den bekannten Frequenzen des Rundfunks, kann jedoch auch das Filtern eines schwachen Signals aus Rauschen wie in der Radioastronomie oder die Rekonstruktion eines verborgenen Signals wie in der Steganographie umfassen.
+%In der Optoelektronik bedeutet "Detektion" die Umwandlung eines empfangenen optischen Eingangs in einen elektrischen Ausgang. Beispielsweise wird das durch eine optische Faser empfangene Lichtsignal in einem Detektor wie einer Fotodiode in ein elektrisches Signal umgewandelt.
+%In der Steganographie werden Versuche, versteckte Signale in verdächtigem Trägermaterial zu erkennen, als Steganalyse bezeichnet. Die Steganalyse unterscheidet sich insofern von den meisten anderen Erkennungsarten, als sie häufig nur die Wahrscheinlichkeit bestimmen kann, mit der eine versteckte Nachricht vorhanden ist. Dies steht im Gegensatz zur Erkennung von Signalen, die einfach verschlüsselt werden, da der Chiffretext oft mit Sicherheit identifiziert werden kann, auch wenn er nicht decodiert werden kann.
+%Beim Militär bezieht sich die Erkennung auf die spezielle Disziplin der Aufklärung mit dem Ziel, die Anwesenheit eines Objekts an einem Ort oder in einer Umgebung zu erkennen.
+%Schließlich ist die Kunst der Erkennung, auch als folgende Hinweise bekannt, die Arbeit eines Detektivs [1] bei dem Versuch, eine Folge von Ereignissen zu rekonstruieren, indem die relevanten Informationen in einer Situation identifiziert werden.
+
+# Hypothese
+
+Je jünger, desto höher ist die Fabrikatsrate im Schnitt.
+Fragetypen
+Fragearten
+Wer sind die verdächtigen
+
+# Daten & Methodik
+
+In der vorliegeden Arbeit wurde auf den _European Social Survey_ der ersten Runde in Deutschland (ESS Round 1 Germany) zurückgegriffen. Dieser enthält Daten von Befragten der deutschen Wohnbevölkerung. XX Interviewer waren an der Datenerhebeung beteiligt. Davon WW Frauen und MM Männer.
+Erhoben wurde mittels CATI, CAPI, PAPI, ich weiß es nich.
+Jeder Interviewer hat XX Interviews geführt.
+
+```{r,  echo=F, warning= F, eval = T, message = F}
+# load library
+
+library(haven)
+# get data
+
+part_data <- read_spss("C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/10_Hausarbeit/data/ESS1DE.sav")
+
+int_data <- read_spss("C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/10_Hausarbeit/data/ESS1cfDE.por")
+```
+
+
+```{r, echo=F, warning= F, eval = T, message = F}
+# get variable names
+options(max.print = 1303)
+set1 <- as.data.frame(part_data)
+#names(set1) # the date is 2018 because of the integrated file, originally the interviews took place in 2002
+
+set2 <- as.data.frame(int_data)
+#names(set2) # contact form data (meta information about the interviewer and the interview procedure)
+```
+
+```{r, echo=F, warning= F, eval = T, message = F}
+lab1 <- datatable(as.data.frame(matrix(variable.names(set1), ncol = 12, dimnames = list(NULL, letters[1:12]))), extensions = 'Scroller', options = list(
+  deferRender = TRUE,
+  scrollY = 566,
+  scroller = TRUE)) # it is not a sufficient matrix with variables, but a more tidy as a simple data.frame
+lab2 <- datatable(as.data.frame(matrix(variable.names(set2), ncol = 12, dimnames = list(NULL, letters[1:12]))), extensions = 'Scroller', options = list(
+  deferRender = TRUE,
+  scrollY = 500,
+  scroller = TRUE))
+```
+
+
+
+```{r, echo=F, warning= F, eval = T, message = F}
+dim(set1)
+# 2919 obs. and 566 var. in data 
+```
+
+```{r, echo=F, warning= F, eval = T, message = F}
+dim(set2)
+# 5796 obs. and 237 var. in interviewer survey
+```
+
+```{r, echo=F, warning= F, eval = F, message = F}
+#validate: How many participants?
+
+length(set1[,"idno"]) #2919 obs.
+
+u1<- unique(as.data.frame(sort(set2[,"INTNUM1"]))) #5796 respo.#
+
+sapply(u1, function(x) length(unique(x)))
+
+u2<- unique(as.data.frame(sort(set2[,"INTNUM2"])))
+
+sapply(u2, function(x) length(unique(x)))
+
+u3<- unique(as.data.frame(set2[, c("INTNUM1", "INTNUM2")]))
+
+as.data.frame(table(u3))
+
+
+```
+
+
+# Analyse
+
+
+## deskriptiv
+
+
+```{r, echo=F, warning= F, eval = F, message = F}
+##Meinungfragen
+##B35-50
+##C6-7
+##C11
+##D1-9
+
+##Einstellungsfragen mit weiß nicht
+## netuse wurde nicht abgefragt
+
+barplot(table(set1[,"tvtot"]))
+barplot(table(set1[,"tvpol"]))
+barplot(table(set1[,"rdpol"]))
+barplot(table(set1[,"rdtot"]))
+barplot(table(set1[,"nwsptot"]))
+barplot(table(set1[,"nwsppol"]))
+barplot(table(set1[,"vote"]))
+
+##B1-6
+##B14!-B
+##B15-24
+##B25a-c
+##B26-27
+##C10,12,17
+
+##scaling
+##A8-10
+##B7-12
+##B29-34
+##C1,13
+##D10-37
+##D40-46
+##D49-55
+
+##behavioural and individual knowledge
+##C2-5, 7-9,10,14-17,20-28
+##D38-39
+##D47-48
+##E1a-12a
+##E13-19,29,37,41
+
+```
+
+
+## multivariat
+
+# 1. text MW-clustering und diskriminanzanalyse --> benfords law und item indikatoren (item-nonresponse-ratio, extreme answer-ratio, others-ratio) --> hierarchisches clustern und distanzanalyse in und zwischen clustern
+
+# internet doc von researchgate: mahalanobis distanz clustern
+# 2. text welche sind gute inhalts-indikatoren und welche gute formale indikatoren zur messung
+# Diskussion
+
+# Literaturverzeichnis
+ende
