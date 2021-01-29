@@ -1,0 +1,81 @@
+---
+title: "Load Data"
+author: "Kevin Glock"
+date: "28 01 2021"
+output:
+  html_document:
+    highlight: textmate
+  toc_depth: 2
+  number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+    echo = TRUE,
+      include = TRUE,
+    eval = TRUE,
+  message = FALSE,
+    results = 'hide',
+      tidy = TRUE,
+    tidy.opts = list(
+      width.cutoff=60
+      )
+    )
+
+#eval whether to evaluate the chunk
+#echo whether to echo source code
+#results 'markup', 'asis', 'hold', 'hide'
+#tidy whether to reformat R code
+#cache whether to cache results
+#g.width, g.height, out.width, out.height device and output size of gures
+#include whether to include the chunk results in output
+#child lenames of child documents
+#engine language name (R, python, . . . )
+```
+
+
+
+# required libraries
+
+
+These libraries are used for the analysis.
+
+```{r packages}
+library(foreign) # read.spss
+library(dplyr) # using pipes
+library(haven) # read_por
+library(DT) # interctive datatable
+```
+
+
+
+# load respondents data
+
+
+Get the data on respondents.
+
+```{r resp data}
+resp <- read.spss(
+  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1HU.sav",
+                  to.data.frame=T, 
+                  use.value.labels = F
+  ) # data on respondents
+
+dim(resp) # 1685 entries and 566 variables
+```
+
+
+
+#load respondents data
+
+
+Get the data on interviewers.
+
+```{r int data}
+int <- read_por(
+  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1cfHU.por"
+  ) # data on interviewers
+
+dim(int) # 2484 entries and 176 variables
+```

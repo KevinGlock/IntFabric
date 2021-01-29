@@ -1,0 +1,1080 @@
+---
+title: "Gibt es gefälschte Interviews im ESS Round 1 Hungary"
+subtitle: "Appendix"
+abstract: "Inhalt: Gesamte Analyse der Hausarbeit"
+author: "Kevin Glock"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: hide
+    fontsize: "12pt"
+    fontstyle: "Arial"
+    theme: sandstone
+    highlight: textmate
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    collapsed: yes
+    smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+    echo = TRUE,
+      include = TRUE,
+    eval = TRUE,
+  message = FALSE,
+    results = 'hide',
+      tidy = TRUE,
+    tidy.opts = list(
+      width.cutoff=60
+      )
+    )
+
+#eval whether to evaluate the chunk
+#echo whether to echo source code
+#results 'markup', 'asis', 'hold', 'hide'
+#tidy whether to reformat R code
+#cache whether to cache results
+#g.width, g.height, out.width, out.height device and output size of gures
+#include whether to include the chunk results in output
+#child lenames of child documents
+#engine language name (R, python, . . . )
+```
+
+
+
+# required libraries
+
+
+These libraries are used for the analysis.
+
+```{r packages}
+library(foreign) # read.spss
+library(dplyr) # using pipes
+library(haven) # read_por
+library(DT) # interctive datatable
+```
+
+
+
+# load respondents data
+
+
+Get the data on respondents.
+
+```{r resp data}
+resp <- read.spss(
+  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1HU.sav",
+                  to.data.frame=T, 
+                  use.value.labels = F
+  ) # data on respondents
+
+# dim(resp) # 1685 entries and 566 variables
+```
+
+
+
+#load respondents data
+
+
+Get the data on interviewers.
+
+```{r int data}
+int <- read_por(
+  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1cfHU.por"
+  ) # data on interviewers
+
+# dim(int) # 2484 entries and 176 variables
+```
+
+
+
+# merge data
+
+Get rid of not used variables and merge the sets to a new merged subset.
+
+```{r merge}
+data1 <- subset.data.frame(
+  resp,
+  select = -c(
+    name,
+      essround,
+        edition,
+      proddate,
+    cntry,
+      pweight,
+    pspwght,
+      dweight,
+        ctzship,
+      cntbrth,
+    lnghoma,
+      lnghomb
+    )
+  ) # remove irrelevant and character variables
+
+# dim(data1) # 1685 entries and 554 variables
+
+data2 <- subset.data.frame(
+  int,
+  select = c(
+    IDNO,
+      INTNUM1,
+        INTNUM2,
+      INTNUM3,
+    TOTCINT1,
+      TOTCINT2,
+        TOTCINT3
+    )
+  )#; dim(data2) # 2484 entries and 7 variables
+
+mergeddata <- merge(
+  data1,
+  data2,
+  by.x="idno",
+  by.y = "IDNO",
+  sort= T,
+  no.dups = F
+  )
+
+mergeddata <- mergeddata %>%
+  select(
+    idno,
+    INTNUM1,
+    TOTCINT1,
+    INTNUM2,
+    TOTCINT2,
+    INTNUM3,
+    TOTCINT3,
+    everything()
+    )#; dim(mergeddata) # 1685 entries and 560 variables
+
+# head(mergeddata, n=10)
+```
+
+
+# Interactive datatable
+
+
+Get an overview.
+
+```{r table, results='hold'}
+datatable(
+  mergeddata[-c(20:1685), -c(31:560)],
+    rownames = FALSE,
+    options(list(
+      className = 'dt-center',
+      targets = 4,
+      width = '10' 
+                )
+          )
+        )
+```
+
+
+# Methodological infos on dataset
+
+
+Total non response rate.
+
+```{r}
+2484-1685 #=799
+
+(799*100)/2484 #=32.17 %
+1-0.3217 # 67.83 %
+(1685/2484)*100 # 67.83%
+```
+
+
+How many interviewer?
+
+```{r}
+unique(int$INTNUM1) # 199 unique interviewer who started first contact
+unique(int$INTNUM2) # 19
+unique(int$INTNUM3) # 2
+
+
+# sum(table(int$INTNUM1))
+# 2461 first contacts
+# 2484-2461=23 NAs
+
+# sum(table(int$INTNUM2)) # 35 re-issues
+# sum(table(int$INTNUM3)) # 4 re-issues
+
+# table(int$TOTCINT1)
+# table(int$TOTCINT2)
+# table(int$TOTCINT3)
+
+
+# 436+224+124+45+7+2=838
+# 436+224+124+45+937=1766
+
+rm(list = c("resp", "int"))
+```
+
+
+How many total contacts being made by the interviews?
+
+```{r}
+data5.0 <- mergeddata %>% subset(mergeddata$TOTCINT1==0)
+data5.1 <- mergeddata %>% subset(mergeddata$TOTCINT1==1)
+data5.2 <- mergeddata %>% subset(mergeddata$TOTCINT1==2)
+data5.3 <- mergeddata %>% subset(mergeddata$TOTCINT1==3)
+data5.4 <- mergeddata %>% subset(mergeddata$TOTCINT1==4)
+data5.5 <- mergeddata %>% subset(mergeddata$TOTCINT1==5)
+data5.6 <- mergeddata %>% subset(mergeddata$TOTCINT1==6)
+data5.7 <- mergeddata %>% subset(mergeddata$TOTCINT1==7)
+data5.8 <- mergeddata %>% subset(mergeddata$TOTCINT1==8)
+data5.9 <- mergeddata %>% subset(mergeddata$TOTCINT1==9)
+data5.10 <- mergeddata %>% subset(mergeddata$TOTCINT1==10)
+# 
+# dim(data5.0) # 689 for all desired interviews resp. 513 for all performed interview
+# dim(data5.1) # 436 resp. 336
+# dim(data5.2) # 224 resp. 147
+# dim(data5.3) # 124 resp. 69
+# dim(data5.4) # 45 resp. 20
+# dim(data5.5) # 16 resp. 7
+# dim(data5.6) # 8 resp. 2
+# dim(data5.7) # 2 resp. 1
+# dim(data5.8) # 1 resp. 0
+# dim(data5.9) # 2 resp. 0
+# dim(data5.10)# 0 resp. 0
+
+data5.0.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==0)
+data5.1.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==1)
+data5.2.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==2)
+
+# dim(data5.0.1) # 7 resp. 7
+# dim(data5.1.1) # 4 resp. 4
+# dim(data5.2.1) # 0 resp. 0
+
+data5.0.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==0)
+data5.1.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==1)
+data5.2.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==2)
+
+# dim(data5.0.2) # 1 resp. 1
+# dim(data5.1.2) # 1 resp. 0
+# dim(data5.2.1) # 0 resp. 0
+
+rm(list = c("data5.0", "data5.1", "data5.2", "data5.3", "data5.4", "data5.5", "data5.6", "data5.7", "data5.8", "data5.9", "data5.10", "data5.0.1", "data5.1.1", "data5.2.1", "data5.3.1", "data5.4.1", "data5.5.1", "data5.6.1", "data5.7.1", "data5.8.1", "data5.9.1", "data5.10.1", "data5.0.2", "data5.1.2", "data5.2.2"))
+```
+
+
+## methodological subset infos
+
+
+How many interviewer?
+
+```{r}
+length(unique(mergeddata[,"INTNUM1"])) # 193 interviewers
+length(unique(mergeddata[,"INTNUM2"])) # 16 interviewers
+length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
+```
+
+
+
+```{r, echo=F, warning= F, eval = F, message = F}
+# Meinungfragen
+# B35-50
+# C6-7
+# C11# 
+# D1-9
+
+# Einstellungsfragen mit weiß nicht
+# netuse wurde nicht abgefragt
+
+# barplot(table(mergeddata[,"tvtot"]))
+# barplot(table(mergeddata[,"tvpol"]))
+# barplot(table(mergeddata[,"rdpol"]))
+# barplot(table(mergeddata[,"rdtot"]))
+# barplot(table(mergeddata[,"nwsptot"]))
+# barplot(table(mergeddata[,"nwsppol"]))
+# barplot(table(mergeddata[,"vote"]))
+
+# B1-6
+# B14!-B
+# B15-24
+# B25a-c
+# B26-27
+# C10,12,17
+
+# scaling
+# A8-10
+# B7-12
+# B29-34
+# C1,13
+# D10-37
+# D40-46
+# D49-55
+
+# behavioural and individual knowledge
+# C2-5, 7-9,10,14-17,20-28
+# D38-39
+# D47-48
+# E1a-12a
+# E13-19,29,37,41
+
+# extreme Response - ordinal, 4 oder 5 Antwortoptionen
+# 5
+# table(mergeddata$gincdif)
+# table(mergeddata$freehms)
+# table(mergeddata$polintr)
+# 4
+# table(mergeddata$prtdgcl)
+# table(mergeddata$imsmetn)
+# table(mergeddata$impcntr)
+# table(mergeddata$eimpcnt)
+# table(mergeddata$impcntr)
+```
+
+
+# variability approach
+
+
+For the variability approach in the first step the variance for each interviewer and every question is calculated and summed up.
+The difference between each observation for a question by interviewer and the mean of the question will provide a t-statistic which can be tested against a resampled distribution.
+
+```{r}
+# dim(mergeddata)
+
+anew <- subset.data.frame(mergeddata,
+                          select = -c(3,5,7)) %>% 
+  group_by(idno, INTNUM1) # sort it by interviewer and match each interview
+
+# head(anew, n = 5) 
+
+anew[is.na(anew)] <-0 # All NAs should be 0 because of calculations
+
+# dim(anew)
+# head(anew, n = 5) # Now the data is tidy; 1685 obs on 557 var
+```
+
+
+## calculate the means
+
+
+Pay attention for 1685 entries, 557 total columns but idno and INTNUM1-3 should not be includes.
+
+```{r}
+bnew <- anew[,c(5:557)] %>% 
+  colMeans() %>% 
+  rbind.data.frame()
+
+names(bnew) <- colnames(anew[5:557])
+
+# head(bnew, n = 5) # now we have the mean values for every variable
+
+bnew <- bnew[rep(
+  seq_len(
+    ncol(bnew)
+    ), 
+  each = 1685), ] # each must be adapted
+
+# head(bnew, n = 5)
+# (bnew, n = 5)
+
+bnew <- bnew[-c(1686:nrow(bnew)), ] # make sure there are no redundant rows
+
+# nrow(bnew) # 1685
+
+# now we have a df with all means for every variable for each observation
+# we have to apply the calculation for each observation
+
+# head(anew, n = 5)
+
+cnew <- anew[,-(1:4)] # we have to remove idno and INTNUM1-3 to make rowwise calculations in the next step
+
+# dim(cnew) # stated values for each interview; 1685 obs and 553 vars
+# dim(bnew) # mean for each question; 1685 obs and 553 vars
+
+```
+
+
+## calculate variabilities
+
+
+Variability for each question over each interview
+
+```{r}
+calc <- (cnew-bnew)^2
+# head(calc, n = 5)
+
+calc2 <- cbind(
+  anew[,c("idno","INTNUM1", "INTNUM2", "INTNUM3")], calc
+  )
+
+# dim(calc2) # like before 1685 obs on 557 vars
+# head(calc2, n = 5)
+
+calc3 <- calc2 %>% 
+  group_by(INTNUM1, INTNUM2, INTNUM3) %>% 
+  summarise(.groups = "keep", 
+            across(.cols = 5:554,
+                   .fns = sum
+                   )
+            ) # sum up for each interviewer over all questions
+
+rm(list = c("anew", "bnew", "cnew"))
+
+# dim(calc3) # 208 obs because of grouping by INTNUM1-3 and 553 vars
+# head(calc3, n = 5)
+```
+
+
+## get the test statistic T
+
+
+Get the test statistic T (total variability) for the clustered interviewer and for the whole survey.
+
+```{r}
+calc4 <- cbind.data.frame(
+  calc3[c("INTNUM1", "INTNUM2", "INTNUM3")],
+  rowsum = rowSums(calc3[4:553])
+  ) # create a new object containing the INTNUMs and the total variability aggregated by INTNUMs
+
+sort.calc4 <- calc4[order(calc4$rowsum) ,] # resort it by the rowsums to get ascending values of the variabilities
+
+# head(sort.calc4, n = 5) 
+
+plot(density(calc4$rowsum)
+     ); options(scipen=5) # the density of variability over all interviewers
+
+sd(calc4$rowsum) # 119066864
+mean(calc4$rowsum) # 176699700
+
+sort(table(calc4$INTNUM1)
+     ) # we can see that some are double or triple this is because they are re-issued by a second and third person
+# head(calc4, n = 20) # look on the entries 6 and 7 for example
+
+length(which(sort.calc4$rowsum < 100000000)) # fifty-seven interviews show suspiciously low total variabilities at first sight
+
+# head(sort.calc4, n = 5) # lowest value 6044290 for interviewer 2086; keep in mind that this are aggregated values!
+# tail(sort.calc4, n = 5) # highest value 599664843 for interviewer 6049
+```
+
+
+## whole dataset
+
+
+Get independent variabilities for the interviews.
+
+```{r}
+calc5 <- cbind(
+  calc2[c("idno", "INTNUM1")], calc
+  )#; head(calc5, n = 5)
+
+calc6 <- cbind.data.frame(
+  calc5[c("idno", "INTNUM1")], 
+  rowsum=rowSums(calc5[3:554])
+  )#; head(calc6, n = 5)
+
+plot(density(calc6$rowsum)
+     ) # density plot for unique interviews not grouped by interviewers
+
+sd(calc6$rowsum) # 15601634
+mean(calc6$rowsum) #21812202
+
+sort.calc6 <- calc6[order(calc6$rowsum) ,] # now sorted by rowsums not by respondends ID
+
+# head(sort.calc6, n = 5) # lowest value 2352503 for interview 2308; keep in mind that this are seperated interview values not aggregated
+# tail(sort.calc6, n = 5) # highest value 104602583 for interview 2089
+```
+
+
+# clustering first step
+
+
+Get tidy data for clustering.
+Write a csv and extract infos to get an overview of the ranking.
+
+```{r}
+# getwd()
+
+# write.csv2(sort.calc6, "2sorted_ranking_calc6.csv",sep = ";")
+
+# sort(table(mergeddata$INTNUM1))
+# head(mergeddata, n = 5)
+
+Intnum_count_each <- mergeddata[,-c(3:length(mergeddata))] %>% 
+  rowwise %>% 
+  mutate(time=list(rep(INTNUM1))) # repeat the INTNUM1 based on its counts
+
+# head(Intnum_count_each, n = 5)
+
+length(unique(
+  Intnum_count_each$INTNUM1)
+  ) # 193 unique interviewers
+
+Intnum_count_each2 <- Intnum_count_each %>% 
+  group_by(INTNUM1) %>% 
+  mutate(count = n()
+         ) # put in a occurrence variable
+
+# head(Intnum_count_each2, n = 5)
+
+Intnum_count <- Intnum_count_each2[, -c(3)] %>% 
+  group_by(INTNUM1, count) %>%
+  mutate(count = n()
+         ) # grouping and erase irrelevant var
+
+rm(list = c("Intnum_count_each", "Intnum_count_each2"))
+
+# head(Intnum_count, n = 5)
+```
+
+
+## clustering second step
+
+
+Create a new object containing the counts.
+
+```{r}
+rowsum_by_idno_intnum <- calc6 %>% 
+  group_by(INTNUM1) %>% 
+  mutate(count = n()
+         )#; head(rowsum_by_idno_intnum, n = 5)
+
+rowsum_by_idno_intnum2 <- rowsum_by_idno_intnum[, -c(2, 4)] # one dataset with only the idno and rowsum
+# head(rowsum_by_idno_intnum2, n = 5)
+```
+
+
+Create new subsets based on the number of interviews an interviewer had to compare them within the groups.
+
+```{r}
+
+o1 <- rowsum_by_idno_intnum %>% 
+  subset(count==1); o1 <- o1[,-4]
+
+o1 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o1)
+
+o2 <- rowsum_by_idno_intnum %>% 
+  subset(count== 2); o2 <- o2[,-4]
+
+o2 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o2)
+
+o3 <- rowsum_by_idno_intnum %>% 
+  subset(count== 3); o3 <- o3[,-4]
+
+o3 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o3)
+
+o4 <- rowsum_by_idno_intnum %>% 
+  subset(count==4); o4 <- o4[,-4]
+
+o4 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o4)
+
+o5 <- rowsum_by_idno_intnum %>% 
+  subset(count==5); o5 <- o5[,-4]
+
+o5 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o5)
+
+o6 <- rowsum_by_idno_intnum %>% 
+  subset(count==6); o6 <- o6[,-4]
+
+o6 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o6)
+
+o7 <- rowsum_by_idno_intnum %>% 
+  subset(count==7); o7 <- o7[,-4]
+
+o7 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o7)
+
+o8 <- rowsum_by_idno_intnum %>% 
+  subset(count==8); o8 <-  o8[,-4]
+
+o8 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o8)
+
+o9 <- rowsum_by_idno_intnum %>% 
+  subset(count==9); o9 <- o9[,-4]
+
+o9 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o9)
+
+o10 <- rowsum_by_idno_intnum %>% 
+  subset(count==10); o10 <- o10[,-4]
+
+o10 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o10)
+
+o11 <- rowsum_by_idno_intnum %>% 
+  subset(count==11); o11 <- o11[,-4]
+
+o11 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o11)
+
+o12 <- rowsum_by_idno_intnum %>% 
+  subset(count==12); o12 <- o12[,-4]
+
+o12 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o12)
+
+o13 <- rowsum_by_idno_intnum %>% 
+  subset(count==13); o13 <- o13[,-4]
+
+o13 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o13)
+
+o14 <- rowsum_by_idno_intnum %>% 
+  subset(count==14); o14 <- o14[,-4]
+
+o14 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o14)
+
+o15 <- rowsum_by_idno_intnum %>% 
+  subset(count==15); o15 <- o15[,-4]
+
+o15 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o15)
+
+o17 <- rowsum_by_idno_intnum %>% 
+  subset(count==17); o17 <- o17[,-4]
+
+o17 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o17)
+
+o18 <- rowsum_by_idno_intnum %>% 
+  subset(count==18); o18 <- o18[,-4]
+
+o18 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o18)
+
+o20 <- rowsum_by_idno_intnum %>% 
+  subset(count==20); o20 <- o20[,-4]
+
+o20 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o20)
+
+o21 <- rowsum_by_idno_intnum %>% 
+  subset(count==21); o21 <- o21[,-4]
+
+o21 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o21)
+
+o22 <- rowsum_by_idno_intnum %>% 
+  subset(count==22); o22 <- o22[,-4]
+
+o22 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o22)
+
+o27 <- rowsum_by_idno_intnum %>% 
+  subset(count==27); o27 <- o27[,-4]
+
+o27 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# head(o27)
+```
+
+
+# clustering third step
+
+
+Create distant matrices.
+
+```{r}
+## with all interviews
+
+dist.fun0 <-dist(rowsum_by_idno_intnum, method="euclidean")
+
+
+## only with one interview
+
+dist.fun1 <-dist(o1, method="euclidean")
+
+
+## only with two interviews
+
+dist.fun2 <-dist(o2, method="euclidean")
+
+
+## only with three interviews
+
+dist.fun3 <-dist(o3, method="euclidean")
+
+
+## only with four interviews
+
+dist.fun4 <-dist(o4, method="euclidean")
+
+
+## only with five interviews
+
+dist.fun5 <-dist(o5, method="euclidean")
+
+
+## only with six interviews
+
+dist.fun6 <-dist(o6, method="euclidean")
+
+
+## only with seven interviews
+
+dist.fun7 <-dist(o7, method="euclidean")
+
+
+## only with eight interviews
+
+dist.fun8 <-dist(o8, method="euclidean")
+
+
+## only with nine interviews
+
+dist.fun9 <-dist(o9, method="euclidean")
+
+
+## only with ten interviews
+
+dist.fun10 <-dist(o10, method="euclidean")
+
+
+## only with eleven interviews
+
+dist.fun11 <-dist(o11, method="euclidean")
+
+
+## only with twelve interviews
+
+dist.fun12 <-dist(o12, method="euclidean")
+
+
+## only with thirteen interviews
+
+dist.fun13 <-dist(o13, method="euclidean")
+
+
+## only with fourteen interviews
+
+dist.fun14 <-dist(o14, method="euclidean")
+
+
+## only with fifteen interviews
+
+dist.fun15 <-dist(o15, method="euclidean")
+
+
+## only with seventeen interviews
+
+dist.fun17 <-dist(o17, method="euclidean")
+
+
+## only with eighteen interviews
+
+dist.fun18 <-dist(o18, method="euclidean")
+
+
+## only with twenty interviews
+
+dist.fun20 <-dist(o20, method="euclidean")
+
+
+## only with twenty-one interviews
+
+dist.fun21 <-dist(o21, method="euclidean")
+
+
+## only with twenty-two interviews
+
+dist.fun22 <-dist(o22, method="euclidean")
+
+
+## only with twenty-seven interviews
+
+dist.fun27 <-dist(o27, method="euclidean")
+```
+
+
+# clustering last step
+
+
+Create hierarical clusters.
+
+```{r}
+## overall
+
+fit.0 <-hclust(dist.fun0, method = "single")
+
+fit0.2 <-hclust(dist.fun0, method = "ward.D2")
+
+
+## only with one interview
+
+fit.1 <-hclust(dist.fun1, method = "single")
+
+fit1.2 <-hclust(dist.fun1, method = "ward.D2")
+
+
+## only with two interviews
+
+fit.2 <-hclust(dist.fun2, method = "single")
+
+fit2.2 <-hclust(dist.fun2, method = "ward.D2")
+
+
+## only with three interviews
+
+fit.3 <-hclust(dist.fun3, method = "single")
+
+fit3.2 <-hclust(dist.fun3, method = "ward.D2")
+
+
+## only with four interviews
+
+fit.4 <-hclust(dist.fun4, method = "single")
+
+fit4.2 <-hclust(dist.fun4, method = "ward.D2")
+
+
+## only with five interviews
+
+fit.5 <-hclust(dist.fun5, method = "single")
+
+fit5.2 <-hclust(dist.fun5, method = "ward.D2")
+
+
+## only with six interviews
+
+fit.6 <-hclust(dist.fun6, method = "single")
+
+fit6.2 <-hclust(dist.fun6, method = "ward.D2")
+
+
+## only with seven interviews
+
+fit.7 <-hclust(dist.fun7, method = "single")
+
+fit7.2 <-hclust(dist.fun7, method = "ward.D2")
+
+
+## only with eight interviews
+
+fit.8 <-hclust(dist.fun8, method = "single")
+
+fit8.2 <-hclust(dist.fun8, method = "ward.D2")
+
+
+## only with nine interviews
+
+fit.9 <-hclust(dist.fun9, method = "single")
+
+fit9.2 <-hclust(dist.fun9, method = "ward.D2")
+
+
+## only with ten interviews
+
+fit.10 <-hclust(dist.fun10, method = "single")
+
+fit10.2 <-hclust(dist.fun10, method = "ward.D2")
+
+
+## only with eleven interviews
+
+fit.11 <-hclust(dist.fun11, method = "single")
+
+fit11.2 <-hclust(dist.fun11, method = "ward.D2")
+
+
+## only with twelve interviews
+
+fit.12 <-hclust(dist.fun12, method = "single")
+
+fit12.2 <-hclust(dist.fun12, method = "ward.D2")
+
+
+## only with thirteen interviews
+
+fit.13 <-hclust(dist.fun13, method = "single")
+
+fit13.2 <-hclust(dist.fun13, method = "ward.D2")
+
+
+## only with fourteen interviews
+
+fit.14 <-hclust(dist.fun14, method = "single")
+
+fit14.2 <-hclust(dist.fun14, method = "ward.D2")
+
+
+## only with fifteen interviews
+
+fit.15 <-hclust(dist.fun15, method = "single")
+
+fit15.2 <-hclust(dist.fun15, method = "ward.D2")
+
+
+## only with seventeen interviews
+
+fit.17 <-hclust(dist.fun17, method = "single")
+
+fit17.2 <-hclust(dist.fun17, method = "ward.D2")
+
+
+## only with eighteen interviews
+
+fit.18 <-hclust(dist.fun18, method = "single")
+
+fit18.2 <-hclust(dist.fun18, method = "ward.D2")
+
+
+## only with twenty interviews
+
+fit.20 <-hclust(dist.fun20, method = "single")
+
+fit20.2 <-hclust(dist.fun20, method = "ward.D2")
+
+
+## only with twenty-one interviews
+
+fit.21 <-hclust(dist.fun21, method = "single")
+
+fit21.2 <-hclust(dist.fun21, method = "ward.D2")
+
+
+## only with twenty-two interviews
+
+fit.22 <-hclust(dist.fun22, method = "single")
+
+fit22.2 <-hclust(dist.fun22, method = "ward.D2")
+
+
+## only with twenty-seven interviews
+
+fit.27 <-hclust(dist.fun27, method = "single")
+
+fit27.2 <-hclust(dist.fun27, method = "ward.D2")
+```
+
+
+# Dendrograms
+
+
+```{r}
+par(mfrow=c(2,1))
+#Dendograms
+
+plot(fit.0, labels=rowsum_by_idno_intnum$INTNUM1, cex=0.6); options(scipen = 5)
+plot(fit0.2, labels=rowsum_by_idno_intnum$INTNUM1, cex=0.6); options(scipen = 5)
+
+plot(fit.1, labels=o1$idno, cex=0.6); options(scipen = 5)
+plot(fit1.2, labels=o1$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.2, labels=o2$idno, cex=0.6); options(scipen = 5)
+plot(fit2.2, labels=o2$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.3, labels=o3$idno, cex=0.6); options(scipen = 5)
+plot(fit3.2, labels=o3$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.4, labels=o4$idno, cex=0.6); options(scipen = 5)
+plot(fit4.2, labels=o4$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.5, labels=o5$idno, cex=0.6); options(scipen = 5)
+plot(fit5.2, labels=o5$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.6, labels=o6$idno, cex=0.6); options(scipen = 5)
+plot(fit6.2, labels=o6$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.7, labels=o7$idno, cex=0.6); options(scipen = 5)
+plot(fit7.2, labels=o7$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.8, labels=o8$idno, cex=0.6); options(scipen = 5)
+plot(fit8.2, labels=o8$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.9, labels=o9$idno, cex=0.6); options(scipen = 5)
+plot(fit9.2, labels=o9$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.10, labels=o10$idno, cex=0.6); options(scipen = 5)
+plot(fit10.2, labels=o10$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.11, labels=o11$idno, cex=0.6); options(scipen = 5)
+plot(fit11.2, labels=o11$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.12, labels=o12$idno, cex=0.6); options(scipen = 5)
+plot(fit12.2, labels=o12$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.13, labels=o13$idno, cex=0.6); options(scipen = 5)
+plot(fit13.2, labels=o13$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.14, labels=o14$idno, cex=0.6); options(scipen = 5)
+plot(fit14.2, labels=o14$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.15, labels=o15$idno, cex=0.6); options(scipen = 5)
+plot(fit15.2, labels=o15$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.17, labels=o17$idno, cex=0.6); options(scipen = 5)
+plot(fit17.2, labels=o17$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.18, labels=o18$idno, cex=0.6); options(scipen = 5)
+plot(fit18.2, labels=o18$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.20, labels=o20$idno, cex=0.6); options(scipen = 5)
+plot(fit20.2, labels=o20$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.21, labels=o21$idno, cex=0.6); options(scipen = 5)
+plot(fit21.2, labels=o21$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.22, labels=o22$idno, cex=0.6); options(scipen = 5)
+plot(fit22.2, labels=o22$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.27, labels=o27$idno, cex=0.6); options(scipen = 5)
+plot(fit27.2, labels=o27$idno, cex=0.6); options(scipen = 5)
+```
+
+
+# get density plots per subgroup
+
+
+```{r}
+par(mfrow=c(2,2))
+plot(density(rowsum_by_idno_intnum$rowsum)); options(scipen = 5)
+
+plot(density(o1$rowsum)); options(scipen = 5)
+
+plot(density(o2$rowsum)); options(scipen = 5)
+
+plot(density(o3$rowsum)); options(scipen = 5)
+
+plot(density(o4$rowsum)); options(scipen = 5)
+
+plot(density(o5$rowsum)); options(scipen = 5)
+
+plot(density(o6$rowsum)); options(scipen = 5)
+
+plot(density(o7$rowsum)); options(scipen = 5)
+
+plot(density(o8$rowsum)); options(scipen = 5)
+
+plot(density(o9$rowsum)); options(scipen = 5)
+
+plot(density(o10$rowsum)); options(scipen = 5)
+
+plot(density(o11$rowsum)); options(scipen = 5)
+
+plot(density(o12$rowsum)); options(scipen = 5)
+
+plot(density(o13$rowsum)); options(scipen = 5)
+
+plot(density(o13$rowsum)); options(scipen = 5)
+
+plot(density(o14$rowsum)); options(scipen = 5)
+
+plot(density(o15$rowsum)); options(scipen = 5)
+
+plot(density(o17$rowsum)); options(scipen = 5)
+
+plot(density(o18$rowsum)); options(scipen = 5)
+
+plot(density(o20$rowsum)); options(scipen = 5)
+
+plot(density(o21$rowsum)); options(scipen = 5)
+
+plot(density(o22$rowsum)); options(scipen = 5)
+
+plot(density(o27$rowsum)); options(scipen = 5)
+```
+

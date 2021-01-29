@@ -1,0 +1,134 @@
+---
+title: "resample"
+author: "Kevin Glock"
+date: "29 01 2021"
+output:
+  html_document:
+    highlight: textmate
+  toc_depth: 2
+  number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+    echo = TRUE,
+      include = TRUE,
+    eval = TRUE,
+  message = FALSE,
+    results = 'hide',
+      tidy = TRUE,
+    tidy.opts = list(
+      width.cutoff=60
+      )
+    )
+
+#eval whether to evaluate the chunk
+#echo whether to echo source code
+#results 'markup', 'asis', 'hold', 'hide'
+#tidy whether to reformat R code
+#cache whether to cache results
+#g.width, g.height, out.width, out.height device and output size of gures
+#include whether to include the chunk results in output
+#child lenames of child documents
+#engine language name (R, python, . . . )
+```
+
+
+# resampling
+
+
+Resample from the subset and check of plausibility.
+
+```{r}
+N <- 100000; SP <- sample(calc4$rowsum,
+                          N, 
+                          replace=T
+                          ) # draw a sample of size N=100,000 from the aggregated rowsums
+
+plot(density(calc4$rowsum), 
+     col ="black", 
+     lwd=2); lines(density(SP), 
+                   col= "grey",
+                   lwd=2); abline(v= c(0, 100000000),
+                                  col="grey",
+                                  lty="dotted",
+                                  lwd=3); options(scipen=5) # plot the density of the original rowsums and the resampled ones
+
+mean(SP) # 176815412
+sd(SP) # 118567212
+mean(calc4$rowsum) # 176699700
+sd(calc4$rowsum) # 119066864
+```
+
+
+Get the densities
+
+```{r}
+dat2 <- data.frame(V1 = calc4$rowsum)
+round(
+  sort(
+    with(dat2, V1/sum(V1))
+    ), digits = 6)
+
+round(
+  cumsum(
+    sort(
+      with(dat2, V1/sum(V1))
+      )
+    ), digits = 6)
+
+length(
+  which(
+    round(cumsum(sort(with(dat2, V1/sum(V1)))), digits = 6) < 0.05)
+  ) # 46 interviewer are on the left side below the lower 5 percent
+```
+
+
+Get the interviewer id and rowsums ordered the same way like the densities.
+Get the number of interviews.
+
+```{r}
+#sort.calc4$INTNUM1
+#sort.calc4$rowsum
+#sort(table(calc4$INTNUM1)) # table of interviews per interviewer ID (193 interviewer)
+```
+
+
+## resample for single interviews
+
+
+```{r}
+N2 <- 100000; SP2 <- sample(
+                      calc6$rowsum,
+                      N2,
+                      replace=T
+                      ) # now sample the same resample for the separated interviews
+
+plot(density(calc6$rowsum),
+     col ="black",
+     lwd=2); lines(density(SP2),
+                   col= "grey",
+                   lwd=2); abline(v= c(0, 15000000),
+                                  col="grey",
+                                  lty="dotted",
+                                  lwd=3); options(scipen=5)
+
+dat3 <- data.frame(V1 = calc6$rowsum)
+
+round(
+  sort(
+    with(dat3, V1/sum(V1))
+    ), digits = 6)
+
+round(
+  cumsum(
+    sort(with(dat3, V1/sum(V1)))
+    ), digits = 6)
+
+length(
+  which(
+    round(cumsum(sort(with(dat3, V1/sum(V1)))), digits = 6) < 0.05)
+  ) # 281 interviews are on the left side below the lower 5 percent
+```
+

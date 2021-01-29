@@ -1,0 +1,188 @@
+---
+title: "Variability"
+author: "Kevin Glock"
+date: "29 01 2021"
+output:
+  html_document:
+    highlight: textmate
+  toc_depth: 2
+  number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+    echo = TRUE,
+      include = TRUE,
+    eval = TRUE,
+  message = FALSE,
+    results = 'hide',
+      tidy = TRUE,
+    tidy.opts = list(
+      width.cutoff=60
+      )
+    )
+
+#eval whether to evaluate the chunk
+#echo whether to echo source code
+#results 'markup', 'asis', 'hold', 'hide'
+#tidy whether to reformat R code
+#cache whether to cache results
+#g.width, g.height, out.width, out.height device and output size of gures
+#include whether to include the chunk results in output
+#child lenames of child documents
+#engine language name (R, python, . . . )
+```
+
+
+# variability approach
+
+
+For the variability approach in the first step the variance for each interviewer and every question is calculated and summed up.
+The difference between each observation for a question by interviewer and the mean of the question will provide a t-statistic which can be tested against a resampled distribution.
+
+```{r}
+dim(mergeddata)
+
+anew <- subset.data.frame(mergeddata,
+                          select = -c(3,5,7)) %>% 
+  group_by(idno, INTNUM1) # sort it by interviewer and match each interview
+
+head(anew) 
+
+anew[is.na(anew)] <-0 # All NAs should be 0 because of calculations
+
+dim(anew)
+head(anew) # Now the data is tidy; 1685 obs on 557 var
+```
+
+
+## calculate the means
+
+
+Pay attention for 1685 entries, 557 total columns but idno and INTNUM1-3 should not be includes.
+
+```{r}
+bnew <- anew[,c(5:557)] %>% 
+  colMeans() %>% 
+  rbind.data.frame()
+
+names(bnew) <- colnames(anew[5:557])
+
+head(bnew) # now we have the mean values for every variable
+
+bnew <- bnew[rep(
+  seq_len(
+    ncol(bnew)
+    ), 
+  each = 1685), ] # each must be adapted
+
+head(bnew, n = 5)
+tail(bnew, n = 5)
+
+bnew <- bnew[-c(1686:nrow(bnew)), ] # make sure there are no redundant rows
+
+nrow(bnew) # 1685
+
+# now we have a df with all means for every variable for each observation
+# we have to apply the calculation for each observation
+
+head(anew)
+
+cnew <- anew[,-(1:4)] # we have to remove idno and INTNUM1-3 to make rowwise calculations in the next step
+
+dim(cnew) # stated values for each interview; 1685 obs and 553 vars
+dim(bnew) # mean for each question; 1685 obs and 553 vars
+
+```
+
+
+## calculate variabilities
+
+
+Variability for each question over each interview
+
+```{r}
+calc <- (cnew-bnew)^2
+head(calc)
+
+calc2 <- cbind(
+  anew[,c("idno","INTNUM1", "INTNUM2", "INTNUM3")], calc
+  )
+
+dim(calc2) # like before 1685 obs on 557 vars
+head(calc2)
+
+calc3 <- calc2 %>% 
+  group_by(INTNUM1, INTNUM2, INTNUM3) %>% 
+  summarise(.groups = "keep", 
+            across(.cols = 5:554,
+                   .fns = sum
+                   )
+            ) # sum up for each interviewer over all questions
+
+rm(list = c("anew", "bnew", "cnew"))
+
+dim(calc3) # 208 obs because of grouping by INTNUM1-3 and 553 vars
+head(calc3)
+```
+
+
+## get the test statistic T
+
+
+Get the test statistic T (total variability) for the clustered interviewer and for the whole survey.
+
+```{r}
+calc4 <- cbind.data.frame(
+  calc3[c("INTNUM1", "INTNUM2", "INTNUM3")],
+  rowsum = rowSums(calc3[4:553])
+  ) # create a new object containing the INTNUMs and the total variability aggregated by INTNUMs
+
+sort.calc4 <- calc4[order(calc4$rowsum) ,] # resort it by the rowsums to get ascending values of the variabilities
+
+head(sort.calc4, n = 5) 
+
+plot(density(calc4$rowsum)
+     ); options(scipen=5) # the density of variability over all interviewers
+
+sd(calc4$rowsum) # 119066864
+mean(calc4$rowsum) # 176699700
+
+sort(table(calc4$INTNUM1)
+     ) # we can see that some are double or triple this is because they are re-issued by a second and third person
+head(calc4, n = 20) # look on the entries 6 and 7 for example
+
+length(which(sort.calc4$rowsum < 100000000)) # fifty-seven interviews show suspiciously low total variabilities at first sight
+
+head(sort.calc4, n = 5) # lowest value 6044290 for interviewer 2086; keep in mind that this are aggregated values!
+tail(sort.calc4, n = 5) # highest value 599664843 for interviewer 6049
+```
+
+
+## whole dataset
+
+
+Get independent variabilities for the interviews.
+
+```{r}
+calc5 <- cbind(
+  calc2[c("idno", "INTNUM1")], calc
+  ); head(calc5, n = 5)
+
+calc6 <- cbind.data.frame(
+  calc5[c("idno", "INTNUM1")], 
+  rowsum=rowSums(calc5[3:554])
+  ); head(calc6, n = 5)
+
+plot(density(calc6$rowsum)
+     ) # density plot for unique interviews not grouped by interviewers
+
+sd(calc6$rowsum) # 15601634
+mean(calc6$rowsum) #21812202
+
+sort.calc6 <- calc6[order(calc6$rowsum) ,] # now sorted by rowsums not by respondends ID
+
+head(sort.calc6, n = 5) # lowest value 2352503 for interview 2308; keep in mind that this are seperated interview values not aggregated
+tail(sort.calc6, n = 5) # highest value 104602583 for interview 2089
+```

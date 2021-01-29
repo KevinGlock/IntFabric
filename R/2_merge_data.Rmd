@@ -1,0 +1,275 @@
+---
+title: "Merge Data"
+author: "Kevin Glock"
+date: "28 01 2021"
+output:
+  html_document:
+    highlight: textmate
+  toc_depth: 2
+  number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+    echo = TRUE,
+      include = TRUE,
+    eval = TRUE,
+  message = FALSE,
+    results = 'hide',
+      tidy = TRUE,
+    tidy.opts = list(
+      width.cutoff=60
+      )
+    )
+
+#eval whether to evaluate the chunk
+#echo whether to echo source code
+#results 'markup', 'asis', 'hold', 'hide'
+#tidy whether to reformat R code
+#cache whether to cache results
+#g.width, g.height, out.width, out.height device and output size of gures
+#include whether to include the chunk results in output
+#child lenames of child documents
+#engine language name (R, python, . . . )
+```
+
+
+# merge data
+
+Get rid of not used variables and merge the sets to a new merged subset.
+
+```{r}
+data1 <- subset.data.frame(
+  resp,
+  select = -c(
+    name,
+      essround,
+        edition,
+      proddate,
+    cntry,
+      pweight,
+    pspwght,
+      dweight,
+        ctzship,
+      cntbrth,
+    lnghoma,
+      lnghomb
+    )
+  ) # remove irrelevant and character variables
+
+dim(data1) # 1685 entries and 554 variables
+
+data2 <- subset.data.frame(
+  int,
+  select = c(
+    IDNO,
+      INTNUM1,
+        INTNUM2,
+      INTNUM3,
+    TOTCINT1,
+      TOTCINT2,
+        TOTCINT3
+    )
+  ); dim(data2) # 2484 entries and 7 variables
+
+mergeddata <- merge(
+  data1,
+  data2,
+  by.x="idno",
+  by.y = "IDNO",
+  sort= T,
+  no.dups = F
+  )
+
+mergeddata <- mergeddata %>%
+  select(
+    idno,
+    INTNUM1,
+    TOTCINT1,
+    INTNUM2,
+    TOTCINT2,
+    INTNUM3,
+    TOTCINT3,
+    everything()
+    ); dim(mergeddata) # 1685 entries and 560 variables
+
+head(mergeddata, n=10)
+```
+
+
+# Interactive datatable
+
+
+Get an overview.
+
+```{r, results='hold'}
+datatable(
+  mergeddata[-c(20:1685), -c(31:560)],
+    rownames = FALSE,
+    options(list(
+      className = 'dt-center',
+      targets = 4,
+      width = '10' 
+                )
+          )
+        )
+```
+
+
+# Methodological infos on dataset
+
+
+Total non response rate.
+
+```{r}
+2484-1685 #=799
+
+(799*100)/2484 #=32.17 %
+1-0.3217 # 67.83 %
+(1685/2484)*100 # 67.83%
+```
+
+
+How many interviewer?
+
+```{r}
+unique(int$INTNUM1) # 199 unique interviewer who started first contact
+unique(int$INTNUM2) # 19
+unique(int$INTNUM3) # 2
+
+
+sum(table(int$INTNUM1))
+# 2461 first contacts
+# 2484-2461=23 NAs
+
+sum(table(int$INTNUM2)) # 35 re-issues
+sum(table(int$INTNUM3)) # 4 re-issues
+
+table(int$TOTCINT1)
+table(int$TOTCINT2)
+table(int$TOTCINT3)
+
+
+# 436+224+124+45+7+2=838
+# 436+224+124+45+937=1766
+
+rm(list = c("resp", "int"))
+```
+
+
+How many total contacts being made by the interviews?
+
+```{r}
+data5.0 <- mergeddata %>% subset(mergeddata$TOTCINT1==0)
+data5.1 <- mergeddata %>% subset(mergeddata$TOTCINT1==1)
+data5.2 <- mergeddata %>% subset(mergeddata$TOTCINT1==2)
+data5.3 <- mergeddata %>% subset(mergeddata$TOTCINT1==3)
+data5.4 <- mergeddata %>% subset(mergeddata$TOTCINT1==4)
+data5.5 <- mergeddata %>% subset(mergeddata$TOTCINT1==5)
+data5.6 <- mergeddata %>% subset(mergeddata$TOTCINT1==6)
+data5.7 <- mergeddata %>% subset(mergeddata$TOTCINT1==7)
+data5.8 <- mergeddata %>% subset(mergeddata$TOTCINT1==8)
+data5.9 <- mergeddata %>% subset(mergeddata$TOTCINT1==9)
+data5.10 <- mergeddata %>% subset(mergeddata$TOTCINT1==10)
+
+dim(data5.0) # 689 for all desired interviews resp. 513 for all performed interview
+dim(data5.1) # 436 resp. 336
+dim(data5.2) # 224 resp. 147
+dim(data5.3) # 124 resp. 69
+dim(data5.4) # 45 resp. 20
+dim(data5.5) # 16 resp. 7
+dim(data5.6) # 8 resp. 2
+dim(data5.7) # 2 resp. 1
+dim(data5.8) # 1 resp. 0
+dim(data5.9) # 2 resp. 0
+dim(data5.10)# 0 resp. 0
+
+data5.0.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==0)
+data5.1.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==1)
+data5.2.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==2)
+
+dim(data5.0.1) # 7 resp. 7
+dim(data5.1.1) # 4 resp. 4
+dim(data5.2.1) # 0 resp. 0
+
+data5.0.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==0)
+data5.1.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==1)
+data5.2.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==2)
+
+dim(data5.0.2) # 1 resp. 1
+dim(data5.1.2) # 1 resp. 0
+dim(data5.2.1) # 0 resp. 0
+
+rm(list = c("data5.0", "data5.1", "data5.2", "data5.3", "data5.4", "data5.5", "data5.6", "data5.7", "data5.8", "data5.9", "data5.10", "data5.0.1", "data5.1.1", "data5.2.1", "data5.3.1", "data5.4.1", "data5.5.1", "data5.6.1", "data5.7.1", "data5.8.1", "data5.9.1", "data5.10.1", "data5.0.2", "data5.1.2", "data5.2.2"))
+```
+
+
+## methodological subset infos
+
+
+How many interviewer?
+
+```{r}
+length(unique(mergeddata[,"INTNUM1"])) # 193 interviewers
+length(unique(mergeddata[,"INTNUM2"])) # 16 interviewers
+length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
+```
+
+
+
+```{r, echo=F, warning= F, eval = F, message = F}
+##Meinungfragen
+##B35-50
+##C6-7
+##C11
+##D1-9
+
+##Einstellungsfragen mit weiß nicht
+## netuse wurde nicht abgefragt
+
+barplot(table(mergeddata[,"tvtot"]))
+barplot(table(mergeddata[,"tvpol"]))
+barplot(table(mergeddata[,"rdpol"]))
+barplot(table(mergeddata[,"rdtot"]))
+barplot(table(mergeddata[,"nwsptot"]))
+barplot(table(mergeddata[,"nwsppol"]))
+barplot(table(mergeddata[,"vote"]))
+
+##B1-6
+##B14!-B
+##B15-24
+##B25a-c
+##B26-27
+##C10,12,17
+
+##scaling
+##A8-10
+##B7-12
+##B29-34
+##C1,13
+##D10-37
+##D40-46
+##D49-55
+
+##behavioural and individual knowledge
+##C2-5, 7-9,10,14-17,20-28
+##D38-39
+##D47-48
+##E1a-12a
+##E13-19,29,37,41
+
+#extreme Response - ordinal, 4 oder 5 Antwortoptionen
+#5
+table(mergeddata$gincdif)
+table(mergeddata$freehms)
+table(mergeddata$polintr)
+#4
+table(mergeddata$prtdgcl)
+table(mergeddata$imsmetn)
+table(mergeddata$impcntr)
+table(mergeddata$eimpcnt)
+table(mergeddata$impcntr)
+```
+
+
