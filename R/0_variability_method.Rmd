@@ -1,12 +1,13 @@
 ---
-title: "Gibt es gefälschte Interviews im ESS Round 1 Hungary"
+title: "Gibt es gefälschte Interviews im ESS 2002 (Round 1) Hungary?"
 subtitle: "Appendix"
-abstract: "Inhalt: Gesamte Analyse der Hausarbeit"
+abstract: "Dies ist der Appendix zur Hausarbeit im Kurs 'Datenerhebung & Fehlerquellen' der Universität Bamberg. Dieses Dokment beinhaltet die gesamte Analyse der Hausarbeit"
 author: "Kevin Glock"
+affiliation: "Universty of Bamberg"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
-    code_folding: hide
+    code_folding: show
     fontsize: "12pt"
     fontstyle: "Arial"
     theme: sandstone
@@ -58,16 +59,18 @@ library(haven) # read_por
 library(DT) # interctive datatable
 ```
 
+# load data
 
+Get the data on respondents and interviewer to merge them in a second step.
 
-# load respondents data
+## load respondents data
 
 
 Get the data on respondents.
 
 ```{r resp data}
 resp <- read.spss(
-  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1HU.sav",
+  "D:/IntFabric/data/ESS1HU.sav",
                   to.data.frame=T, 
                   use.value.labels = F
   ) # data on respondents
@@ -76,25 +79,22 @@ resp <- read.spss(
 ```
 
 
-
-#load respondents data
-
+## load interviewer data
 
 Get the data on interviewers.
 
 ```{r int data}
 int <- read_por(
-  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1cfHU.por"
+  "D:/IntFabric/data/ESS1cfHU.por"
   ) # data on interviewers
 
 # dim(int) # 2484 entries and 176 variables
 ```
 
 
+# merge datasets
 
-# merge data
-
-Get rid of not used variables and merge the sets to a new merged subset.
+Get rid of unused variables and merge the sets to a new merged subset.
 
 ```{r merge}
 data1 <- subset.data.frame(
@@ -158,11 +158,11 @@ mergeddata <- mergeddata %>%
 # Interactive datatable
 
 
-Get an overview.
+Get an overview on the new set. This data table is restricted on the first 20 obs for the first 30 variables to make client-sided rendering possible. The original data is to large. Please download the data and RMarkdown from my GitHub repository, be aware of license restrictions and citations (see ESS ERIC sites).
 
 ```{r table, results='hold'}
 datatable(
-  mergeddata[-c(20:1685), -c(31:560)],
+  mergeddata[-c(21:1685), -c(31:560)],
     rownames = FALSE,
     options(list(
       className = 'dt-center',
@@ -180,36 +180,37 @@ datatable(
 Total non response rate.
 
 ```{r}
-2484-1685 #=799
+2484-1685 #=799 non-responses
 
-(799*100)/2484 #=32.17 %
-1-0.3217 # 67.83 %
-(1685/2484)*100 # 67.83%
+(799*100)/2484 #=32.17 % non responses
+1-0.3217 # 0.6783 # response rate
+(1685/2484)*100 # 67.83% # response ratein percent
 ```
 
 
-How many interviewer?
+How many interviewer are there?
 
 ```{r}
-unique(int$INTNUM1) # 199 unique interviewer who started first contact
-unique(int$INTNUM2) # 19
-unique(int$INTNUM3) # 2
+length(unique(int$INTNUM1)) # 199 unique interviewers who started first contact
+length(unique(int$INTNUM2)) # 20 unique second interviewers who started first contact (there is one NA counted)
+length(unique(int$INTNUM3)) # 2 unique third interviewers who started first contact (there is one NA counted)
 
-
-# sum(table(int$INTNUM1))
-# 2461 first contacts
+sum(table(int$INTNUM1)) # 2461 first contacts
 # 2484-2461=23 NAs
 
-# sum(table(int$INTNUM2)) # 35 re-issues
-# sum(table(int$INTNUM3)) # 4 re-issues
+sum(table(int$INTNUM2)) # 35 re-issues
+sum(table(int$INTNUM3)) # 4 re-issues
 
-# table(int$TOTCINT1)
-# table(int$TOTCINT2)
-# table(int$TOTCINT3)
+table(int$TOTCINT1) # 436+224+124+45+16+8+2+1+2=858 (0 contacts and 99 are not included)
+#   0   1   2   3   4   5   6   7   8   9  99 
+# 689 436 224 124  45  16   8   2   1   2 937
 
-
-# 436+224+124+45+7+2=838
-# 436+224+124+45+937=1766
+table(int$TOTCINT2) # 7+2=9
+#  0    1    2   99 
+#  7    7    2 2449 
+table(int$TOTCINT3) # 0
+#   0   99 
+#   1 2479
 
 rm(list = c("resp", "int"))
 ```
@@ -258,7 +259,7 @@ data5.2.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==2)
 # dim(data5.1.2) # 1 resp. 0
 # dim(data5.2.1) # 0 resp. 0
 
-rm(list = c("data5.0", "data5.1", "data5.2", "data5.3", "data5.4", "data5.5", "data5.6", "data5.7", "data5.8", "data5.9", "data5.10", "data5.0.1", "data5.1.1", "data5.2.1", "data5.3.1", "data5.4.1", "data5.5.1", "data5.6.1", "data5.7.1", "data5.8.1", "data5.9.1", "data5.10.1", "data5.0.2", "data5.1.2", "data5.2.2"))
+rm(list = c("data5.0", "data5.1", "data5.2", "data5.3", "data5.4", "data5.5", "data5.6", "data5.7", "data5.8", "data5.9", "data5.10", "data5.0.1", "data5.1.1", "data5.2.1", "data5.0.2", "data5.1.2", "data5.2.2"))
 ```
 
 
@@ -268,22 +269,25 @@ rm(list = c("data5.0", "data5.1", "data5.2", "data5.3", "data5.4", "data5.5", "d
 How many interviewer?
 
 ```{r}
-length(unique(mergeddata[,"INTNUM1"])) # 193 interviewers
-length(unique(mergeddata[,"INTNUM2"])) # 16 interviewers
-length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
+length(unique(mergeddata[,"INTNUM1"])) # 193 interviewers 1 NA
+length(unique(is.na(mergeddata[,"INTNUM1"])))
+length(unique(mergeddata[,"INTNUM2"])) # 16 interviewers 2 NAs
+length(unique(is.na(mergeddata[,"INTNUM2"])))
+length(unique(mergeddata[,"INTNUM3"])) # 1 but ...
+length(unique(is.na(mergeddata[,"INTNUM3"]))) # ... 1 NA
 ```
 
 
 
 ```{r, echo=F, warning= F, eval = F, message = F}
-# Meinungfragen
+# Infos on content of questions
+# opinions
 # B35-50
 # C6-7
 # C11# 
 # D1-9
 
-# Einstellungsfragen mit weiß nicht
-# netuse wurde nicht abgefragt
+# attitudes with "don`t know" categories
 
 # barplot(table(mergeddata[,"tvtot"]))
 # barplot(table(mergeddata[,"tvpol"]))
@@ -300,7 +304,7 @@ length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
 # B26-27
 # C10,12,17
 
-# scaling
+# attitude questions with scaling
 # A8-10
 # B7-12
 # B29-34
@@ -309,14 +313,14 @@ length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
 # D40-46
 # D49-55
 
-# behavioural and individual knowledge
+# behavioural and individual knowledge questions
 # C2-5, 7-9,10,14-17,20-28
 # D38-39
 # D47-48
 # E1a-12a
 # E13-19,29,37,41
 
-# extreme Response - ordinal, 4 oder 5 Antwortoptionen
+# extreme Response - ordinal, 4 or 5 categories
 # 5
 # table(mergeddata$gincdif)
 # table(mergeddata$freehms)
@@ -333,15 +337,15 @@ length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
 # variability approach
 
 
-For the variability approach in the first step the variance for each interviewer and every question is calculated and summed up.
-The difference between each observation for a question by interviewer and the mean of the question will provide a t-statistic which can be tested against a resampled distribution.
+For the variability approach in the first step the sum of squared errors for each interviewer on every question is calculated and summed up over the interviewer. The resulting value is the total variability within an interviewer cluster of questionnaires.
+The difference between each observation for each question by interviewer and the mean of the questions will provide a statistic T (not t-statistic but total of variability) which can be tested against a resampled distribution.
 
 ```{r}
 # dim(mergeddata)
 
 anew <- subset.data.frame(mergeddata,
                           select = -c(3,5,7)) %>% 
-  group_by(idno, INTNUM1) # sort it by interviewer and match each interview
+  group_by(idno, INTNUM1) # sort it by interviewers and match each interview
 
 # head(anew, n = 5) 
 
@@ -355,7 +359,7 @@ anew[is.na(anew)] <-0 # All NAs should be 0 because of calculations
 ## calculate the means
 
 
-Pay attention for 1685 entries, 557 total columns but idno and INTNUM1-3 should not be includes.
+Pay attention for 1685 entries, 557 total columns but idno and INTNUM1-3 should not be included.
 
 ```{r}
 bnew <- anew[,c(5:557)] %>% 
@@ -438,7 +442,10 @@ sort.calc4 <- calc4[order(calc4$rowsum) ,] # resort it by the rowsums to get asc
 
 # head(sort.calc4, n = 5) 
 
-plot(density(calc4$rowsum)
+
+plot(density(calc4$rowsum), 
+     main = "Density plot", 
+     sub = "total variability of each interviewer over their questionnaires" 
      ); options(scipen=5) # the density of variability over all interviewers
 
 sd(calc4$rowsum) # 119066864
@@ -470,23 +477,183 @@ calc6 <- cbind.data.frame(
   rowsum=rowSums(calc5[3:554])
   )#; head(calc6, n = 5)
 
-plot(density(calc6$rowsum)
+plot(density(calc6$rowsum), 
+     main = "Density plot", 
+     sub = "total variability of each single interview"
      ) # density plot for unique interviews not grouped by interviewers
 
 sd(calc6$rowsum) # 15601634
 mean(calc6$rowsum) #21812202
 
-sort.calc6 <- calc6[order(calc6$rowsum) ,] # now sorted by rowsums not by respondends ID
+sort.calc6 <- calc6[order(calc6$rowsum) ,] # now sorted by rowsums, not by respondends ID
 
 # head(sort.calc6, n = 5) # lowest value 2352503 for interview 2308; keep in mind that this are seperated interview values not aggregated
 # tail(sort.calc6, n = 5) # highest value 104602583 for interview 2089
+```
+
+# resampling
+
+
+Resample from the subset for clustered and single interviews. 
+
+```{r}
+set.seed(1234)
+N <- 100000; SP <- sample(calc4$rowsum,
+                          N, 
+                          replace=T
+                          ) # draw a sample of size N=100,000 from the aggregated rowsums
+
+# mean(SP) # 163212669
+# sd(SP) # 174619192
+# 163212669-174619192= -11406523
+set.seed(NULL)
+```
+
+
+```{r}
+set.seed(42)
+N2 <- 100000; SP2 <- sample(
+                      calc6$rowsum,
+                      N2,
+                      replace=T
+                      ) # now sample the same resample for the separated interviews
+
+mean(SP2) # 21782407
+# sd(SP) # 174619192
+
+# 21782407-174619192= -152836785
+
+```
+
+
+## Get the densities
+
+```{r}
+dat2 <- data.frame(V1 = calc4$rowsum)
+dat3 <- data.frame(V1 = calc6$rowsum)
+
+round(
+  sort(
+    with(dat2, V1/sum(V1))
+    ), digits = 6)
+
+round(
+  cumsum(
+    sort(
+      with(dat2, V1/sum(V1))
+      )
+    ), digits = 6)
+
+length(
+  which(
+    round(cumsum(sort(with(dat2, V1/sum(V1)))), digits = 6) < 0.05)
+  ) # 39 interviewer are on the left side below the lower 5 percent
+
+round(
+  sort(
+    with(dat3, V1/sum(V1))
+    ), digits = 6)
+
+round(
+  cumsum(
+    sort(with(dat3, V1/sum(V1)))
+    ), digits = 6)
+
+length(
+  which(
+    round(cumsum(sort(with(dat3, V1/sum(V1)))), digits = 6) < 0.05)
+  ) # 183 interviews are on the left side below the lower 5 percent
+```
+
+```{r, include= FALSE}
+#Get the interviewer id and rowsums ordered the same way like the densities.
+#Get the number of interviews.
+#sort.calc4$INTNUM1
+#sort.calc4$rowsum
+#sort(table(calc4$INTNUM1)) # table of interviews per interviewer ID (193 interviewer)
+```
+
+
+## plot the densities
+
+Plot the densities for the clustered approach.
+
+```{r}
+
+mean(calc4$rowsum) # 176699700
+sd(calc4$rowsum) # 119066864
+# 176699700-119066864=57632836 is the value of minus one sd in the sample
+# 176699700+119066864=295766564 is the value of plus one sd
+
+mean(SP) # 163212669
+sd(SP) # 174619192
+# 163212669-174619192=-11406523 is the value of minus one sd in the resample
+# 163212669+174619192= 337831861 is the value of plus one sd
+
+plot(density(calc4$rowsum), 
+     col ="black", 
+     lwd=2, 
+     main = "Density plot", 
+     sub = "total variability of each interviewer over their questionnaires" 
+     ); lines(density(SP), 
+                   col= "grey",
+                   lwd=2); abline(v= c(57632836, 176699700, 295766564),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(-11406523, 163212669, 337831861),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         ); options(scipen = 5) # plot the density of the clustered rowsums and the resampled ones
+
+
+```
+
+
+
+```{r}
+sd(calc6$rowsum) # 15673431
+mean(calc6$rowsum) # 21768888
+# 21768888-15673431= 6095457 is the value of minus one sd
+# 21768888+15673431=37442319 is the value of plus one sd
+
+mean(SP2) # 21782407
+sd(SP2) # 15634017
+# 21782407-15634017=6148390 is the value of minus one sd
+# 21782407+15634017=37416424 is the value of plus one sd
+
+plot(density(calc6$rowsum), 
+     main = "Density plot", 
+     sub = "total variability of each single interview", 
+     col = "black", 
+     lwd = 2
+     ); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         ); options(scipen = 5) # density plot for unique interviews not grouped by interviewers
 ```
 
 
 # clustering first step
 
 
-Get tidy data for clustering.
+Get the data tidy for clustering.
 Write a csv and extract infos to get an overview of the ranking.
 
 ```{r}
@@ -497,31 +664,15 @@ Write a csv and extract infos to get an overview of the ranking.
 # sort(table(mergeddata$INTNUM1))
 # head(mergeddata, n = 5)
 
-Intnum_count_each <- mergeddata[,-c(3:length(mergeddata))] %>% 
-  rowwise %>% 
-  mutate(time=list(rep(INTNUM1))) # repeat the INTNUM1 based on its counts
+Intnum_count_each <- calc5[-c(3:length(calc5))] %>% 
+  group_by(INTNUM1) %>%
+  mutate(count = n()) # repeat the INTNUM1 based on its counts
 
 # head(Intnum_count_each, n = 5)
 
 length(unique(
   Intnum_count_each$INTNUM1)
-  ) # 193 unique interviewers
-
-Intnum_count_each2 <- Intnum_count_each %>% 
-  group_by(INTNUM1) %>% 
-  mutate(count = n()
-         ) # put in a occurrence variable
-
-# head(Intnum_count_each2, n = 5)
-
-Intnum_count <- Intnum_count_each2[, -c(3)] %>% 
-  group_by(INTNUM1, count) %>%
-  mutate(count = n()
-         ) # grouping and erase irrelevant var
-
-rm(list = c("Intnum_count_each", "Intnum_count_each2"))
-
-# head(Intnum_count, n = 5)
+  ) # 166 unique interviewers
 ```
 
 
@@ -531,142 +682,140 @@ rm(list = c("Intnum_count_each", "Intnum_count_each2"))
 Create a new object containing the counts.
 
 ```{r}
-rowsum_by_idno_intnum <- calc6 %>% 
-  group_by(INTNUM1) %>% 
-  mutate(count = n()
-         )#; head(rowsum_by_idno_intnum, n = 5)
+rowsum_by_intnum <- cbind(Intnum_count_each[,1:3], calc6[, "rowsum"])
+names(rowsum_by_intnum) <- c("idno", "INTNUM1", "count", "rowsum")   #; head(rowsum_by_idno_intnum, n = 5)
 
-rowsum_by_idno_intnum2 <- rowsum_by_idno_intnum[, -c(2, 4)] # one dataset with only the idno and rowsum
+rowsum_by_intnum2 <- rowsum_by_intnum[, -c(2,3)] # one dataset with only the idno and rowsum
 # head(rowsum_by_idno_intnum2, n = 5)
 ```
 
 
 Create new subsets based on the number of interviews an interviewer had to compare them within the groups.
 
-```{r}
+```{r, results= 'hide'}
 
-o1 <- rowsum_by_idno_intnum %>% 
-  subset(count==1); o1 <- o1[,-4]
+o1 <- rowsum_by_intnum %>% 
+  subset(count==1); o1 <- o1[,-3]
 
 o1 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o1)
 
-o2 <- rowsum_by_idno_intnum %>% 
-  subset(count== 2); o2 <- o2[,-4]
+o2 <- rowsum_by_intnum %>% 
+  subset(count== 2); o2 <- o2[,-3]
 
 o2 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o2)
 
-o3 <- rowsum_by_idno_intnum %>% 
-  subset(count== 3); o3 <- o3[,-4]
+o3 <- rowsum_by_intnum %>% 
+  subset(count== 3); o3 <- o3[,-3]
 
 o3 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o3)
 
-o4 <- rowsum_by_idno_intnum %>% 
-  subset(count==4); o4 <- o4[,-4]
+o4 <- rowsum_by_intnum %>% 
+  subset(count==4); o4 <- o4[,-3]
 
 o4 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o4)
 
-o5 <- rowsum_by_idno_intnum %>% 
-  subset(count==5); o5 <- o5[,-4]
+o5 <- rowsum_by_intnum %>% 
+  subset(count==5); o5 <- o5[,-3]
 
 o5 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o5)
 
-o6 <- rowsum_by_idno_intnum %>% 
-  subset(count==6); o6 <- o6[,-4]
+o6 <- rowsum_by_intnum %>% 
+  subset(count==6); o6 <- o6[,-3]
 
 o6 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o6)
 
-o7 <- rowsum_by_idno_intnum %>% 
-  subset(count==7); o7 <- o7[,-4]
+o7 <- rowsum_by_intnum %>% 
+  subset(count==7); o7 <- o7[,-3]
 
 o7 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o7)
 
-o8 <- rowsum_by_idno_intnum %>% 
-  subset(count==8); o8 <-  o8[,-4]
+o8 <- rowsum_by_intnum %>% 
+  subset(count==8); o8 <-  o8[,-3]
 
 o8 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o8)
 
-o9 <- rowsum_by_idno_intnum %>% 
-  subset(count==9); o9 <- o9[,-4]
+o9 <- rowsum_by_intnum %>% 
+  subset(count==9); o9 <- o9[,-3]
 
 o9 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o9)
 
-o10 <- rowsum_by_idno_intnum %>% 
-  subset(count==10); o10 <- o10[,-4]
+o10 <- rowsum_by_intnum %>% 
+  subset(count==10); o10 <- o10[,-3]
 
 o10 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o10)
 
-o11 <- rowsum_by_idno_intnum %>% 
-  subset(count==11); o11 <- o11[,-4]
+o11 <- rowsum_by_intnum %>% 
+  subset(count==11); o11 <- o11[,-3]
 
 o11 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o11)
 
-o12 <- rowsum_by_idno_intnum %>% 
-  subset(count==12); o12 <- o12[,-4]
+o12 <- rowsum_by_intnum %>% 
+  subset(count==12); o12 <- o12[,-3]
 
 o12 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o12)
 
-o13 <- rowsum_by_idno_intnum %>% 
-  subset(count==13); o13 <- o13[,-4]
+o13 <- rowsum_by_intnum %>% 
+  subset(count==13); o13 <- o13[,-3]
 
 o13 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o13)
 
-o14 <- rowsum_by_idno_intnum %>% 
-  subset(count==14); o14 <- o14[,-4]
+o14 <- rowsum_by_intnum %>% 
+  subset(count==14); o14 <- o14[,-3]
 
 o14 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o14)
 
-o15 <- rowsum_by_idno_intnum %>% 
-  subset(count==15); o15 <- o15[,-4]
+o15 <- rowsum_by_intnum %>% 
+  subset(count==15); o15 <- o15[,-3]
 
 o15 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o15)
 
-o17 <- rowsum_by_idno_intnum %>% 
-  subset(count==17); o17 <- o17[,-4]
+o17 <- rowsum_by_intnum %>% 
+  subset(count==17); o17 <- o17[,-3]
 
 o17 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o17)
 
-o18 <- rowsum_by_idno_intnum %>% 
-  subset(count==18); o18 <- o18[,-4]
+o18 <- rowsum_by_intnum %>% 
+  subset(count==18); o18 <- o18[,-3]
 
 o18 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o18)
 
-o20 <- rowsum_by_idno_intnum %>% 
-  subset(count==20); o20 <- o20[,-4]
+o20 <- rowsum_by_intnum %>% 
+  subset(count==20); o20 <- o20[,-3]
 
 o20 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o20)
 
-o21 <- rowsum_by_idno_intnum %>% 
-  subset(count==21); o21 <- o21[,-4]
+o21 <- rowsum_by_intnum %>% 
+  subset(count==21); o21 <- o21[,-3]
 
 o21 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o21)
 
-o22 <- rowsum_by_idno_intnum %>% 
-  subset(count==22); o22 <- o22[,-4]
+o22 <- rowsum_by_intnum %>% 
+  subset(count==22); o22 <- o22[,-3]
 
 o22 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o22)
 
-o27 <- rowsum_by_idno_intnum %>% 
-  subset(count==27); o27 <- o27[,-4]
+o27 <- rowsum_by_intnum %>% 
+  subset(count==27); o27 <- o27[,-3]
 
 o27 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 # head(o27)
@@ -681,7 +830,7 @@ Create distant matrices.
 ```{r}
 ## with all interviews
 
-dist.fun0 <-dist(rowsum_by_idno_intnum, method="euclidean")
+dist.fun0 <-dist(rowsum_by_intnum, method="euclidean")
 
 
 ## only with one interview
@@ -955,126 +1104,439 @@ fit27.2 <-hclust(dist.fun27, method = "ward.D2")
 
 
 ```{r}
-par(mfrow=c(2,1))
+par(mfrow=c(1,1))
 #Dendograms
 
-plot(fit.0, labels=rowsum_by_idno_intnum$INTNUM1, cex=0.6); options(scipen = 5)
-plot(fit0.2, labels=rowsum_by_idno_intnum$INTNUM1, cex=0.6); options(scipen = 5)
+plot(fit.0, labels=rowsum_by_intnum$INTNUM1, cex=0.6, main = "Single-Linkage", sub = "all interviews", xlab = ""); options(scipen = 5)
+plot(fit0.2, labels=rowsum_by_intnum$INTNUM1, cex=0.6, sub = "all interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.1, labels=o1$idno, cex=0.6); options(scipen = 5)
-plot(fit1.2, labels=o1$idno, cex=0.6); options(scipen = 5)
+plot(fit.1, labels=o1$idno, cex=0.6, main = "Single-Linkage", sub = "1 interview", xlab = ""); options(scipen = 5)
+plot(fit1.2, labels=o1$idno, cex=0.6, sub = "1 interview", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.2, labels=o2$idno, cex=0.6); options(scipen = 5)
-plot(fit2.2, labels=o2$idno, cex=0.6); options(scipen = 5)
+plot(fit.2, labels=o2$idno, cex=0.6, main = "Single-Linkage", sub = "2 interviews", xlab = ""); options(scipen = 5)
+plot(fit2.2, labels=o2$idno, cex=0.6, sub = "2 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.3, labels=o3$idno, cex=0.6); options(scipen = 5)
-plot(fit3.2, labels=o3$idno, cex=0.6); options(scipen = 5)
+plot(fit.3, labels=o3$idno, cex=0.6, main = "Single-Linkage", sub = "3 interviews", xlab = ""); options(scipen = 5)
+plot(fit3.2, labels=o3$idno, cex=0.6, sub = "3 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.4, labels=o4$idno, cex=0.6); options(scipen = 5)
-plot(fit4.2, labels=o4$idno, cex=0.6); options(scipen = 5)
+plot(fit.4, labels=o4$idno, cex=0.6, main = "Single-Linkage", sub = "4 interviews", xlab = ""); options(scipen = 5)
+plot(fit4.2, labels=o4$idno, cex=0.6, sub = "4 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.5, labels=o5$idno, cex=0.6); options(scipen = 5)
-plot(fit5.2, labels=o5$idno, cex=0.6); options(scipen = 5)
+plot(fit.5, labels=o5$idno, cex=0.6, main = "Single-Linkage", sub = "5 interviews", xlab = ""); options(scipen = 5)
+plot(fit5.2, labels=o5$idno, cex=0.6, sub = "5 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.6, labels=o6$idno, cex=0.6); options(scipen = 5)
-plot(fit6.2, labels=o6$idno, cex=0.6); options(scipen = 5)
+plot(fit.6, labels=o6$idno, cex=0.6, main = "Single-Linkage", sub = "6 interviews", xlab = ""); options(scipen = 5)
+plot(fit6.2, labels=o6$idno, cex=0.6, sub = "6 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.7, labels=o7$idno, cex=0.6); options(scipen = 5)
-plot(fit7.2, labels=o7$idno, cex=0.6); options(scipen = 5)
+plot(fit.7, labels=o7$idno, cex=0.6, main = "Single-Linkage", sub = "7 interviews", xlab = ""); options(scipen = 5)
+plot(fit7.2, labels=o7$idno, cex=0.6, sub = "7 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.8, labels=o8$idno, cex=0.6); options(scipen = 5)
-plot(fit8.2, labels=o8$idno, cex=0.6); options(scipen = 5)
+plot(fit.8, labels=o8$idno, cex=0.6, main = "Single-Linkage", sub = "8 interviews", xlab = ""); options(scipen = 5)
+plot(fit8.2, labels=o8$idno, cex=0.6, sub = "8 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.9, labels=o9$idno, cex=0.6); options(scipen = 5)
-plot(fit9.2, labels=o9$idno, cex=0.6); options(scipen = 5)
+plot(fit.9, labels=o9$idno, cex=0.6, main = "Single-Linkage", sub = "9 interviews", xlab = ""); options(scipen = 5)
+plot(fit9.2, labels=o9$idno, cex=0.6, sub = "9 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.10, labels=o10$idno, cex=0.6); options(scipen = 5)
-plot(fit10.2, labels=o10$idno, cex=0.6); options(scipen = 5)
+plot(fit.10, labels=o10$idno, cex=0.6, main = "Single-Linkage", sub = "10 interviews", xlab = ""); options(scipen = 5)
+plot(fit10.2, labels=o10$idno, cex=0.6, sub = "10 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.11, labels=o11$idno, cex=0.6); options(scipen = 5)
-plot(fit11.2, labels=o11$idno, cex=0.6); options(scipen = 5)
+plot(fit.11, labels=o11$idno, cex=0.6, main = "Single-Linkage", sub = "11 interviews", xlab = ""); options(scipen = 5)
+plot(fit11.2, labels=o11$idno, cex=0.6, sub = "11 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.12, labels=o12$idno, cex=0.6); options(scipen = 5)
-plot(fit12.2, labels=o12$idno, cex=0.6); options(scipen = 5)
+plot(fit.12, labels=o12$idno, cex=0.6, main = "Single-Linkage", sub = "12 interviews", xlab = ""); options(scipen = 5)
+plot(fit12.2, labels=o12$idno, cex=0.6, sub = "12 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.13, labels=o13$idno, cex=0.6); options(scipen = 5)
-plot(fit13.2, labels=o13$idno, cex=0.6); options(scipen = 5)
+plot(fit.13, labels=o13$idno, cex=0.6, main = "Single-Linkage", sub = "13 interviews", xlab = ""); options(scipen = 5)
+plot(fit13.2, labels=o13$idno, cex=0.6, sub = "13 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.14, labels=o14$idno, cex=0.6); options(scipen = 5)
-plot(fit14.2, labels=o14$idno, cex=0.6); options(scipen = 5)
+plot(fit.14, labels=o14$idno, cex=0.6, main = "Single-Linkage", sub = "14 interviews", xlab = ""); options(scipen = 5)
+plot(fit14.2, labels=o14$idno, cex=0.6, sub = "14 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.15, labels=o15$idno, cex=0.6); options(scipen = 5)
-plot(fit15.2, labels=o15$idno, cex=0.6); options(scipen = 5)
+plot(fit.15, labels=o15$idno, cex=0.6, main = "Single-Linkage", sub = "15 interviews", xlab = ""); options(scipen = 5)
+plot(fit15.2, labels=o15$idno, cex=0.6, sub = "15 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.17, labels=o17$idno, cex=0.6); options(scipen = 5)
-plot(fit17.2, labels=o17$idno, cex=0.6); options(scipen = 5)
+plot(fit.17, labels=o17$idno, cex=0.6, main = "Single-Linkage", sub = "17 interviews", xlab = ""); options(scipen = 5)
+plot(fit17.2, labels=o17$idno, cex=0.6, sub = "17 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.18, labels=o18$idno, cex=0.6); options(scipen = 5)
-plot(fit18.2, labels=o18$idno, cex=0.6); options(scipen = 5)
+plot(fit.18, labels=o18$idno, cex=0.6, main = "Single-Linkage", sub = "18 interviews", xlab = ""); options(scipen = 5)
+plot(fit18.2, labels=o18$idno, cex=0.6, sub = "18 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.20, labels=o20$idno, cex=0.6); options(scipen = 5)
-plot(fit20.2, labels=o20$idno, cex=0.6); options(scipen = 5)
+plot(fit.20, labels=o20$idno, cex=0.6, main = "Single-Linkage", sub = "20 interviews", xlab = ""); options(scipen = 5)
+plot(fit20.2, labels=o20$idno, cex=0.6, sub = "20 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.21, labels=o21$idno, cex=0.6); options(scipen = 5)
-plot(fit21.2, labels=o21$idno, cex=0.6); options(scipen = 5)
+plot(fit.21, labels=o21$idno, cex=0.6, main = "Single-Linkage", sub = "21 interviews", xlab = ""); options(scipen = 5)
+plot(fit21.2, labels=o21$idno, cex=0.6, sub = "21 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.22, labels=o22$idno, cex=0.6); options(scipen = 5)
-plot(fit22.2, labels=o22$idno, cex=0.6); options(scipen = 5)
+plot(fit.22, labels=o22$idno, cex=0.6, main = "Single-Linkage", sub = "22 interviews", xlab = ""); options(scipen = 5)
+plot(fit22.2, labels=o22$idno, cex=0.6, sub = "22 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 
-plot(fit.27, labels=o27$idno, cex=0.6); options(scipen = 5)
-plot(fit27.2, labels=o27$idno, cex=0.6); options(scipen = 5)
+plot(fit.27, labels=o27$idno, cex=0.6, main = "Single-Linkage", sub = "27 interviews", xlab = ""); options(scipen = 5)
+plot(fit27.2, labels=o27$idno, cex=0.6, sub = "27 interviews", main = "Ward-Clustering", xlab = ""); options(scipen = 5)
 ```
 
 
 # get density plots per subgroup
 
+The following plots show the density plots for the subgroups plotted against the resampling distribution on total variabilities in unique interviews over the whole sample.
 
 ```{r}
 par(mfrow=c(2,2))
-plot(density(rowsum_by_idno_intnum$rowsum)); options(scipen = 5)
+plot(density(rowsum_by_intnum$rowsum), main = "Density plot for subgroup", sub = "all interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
+plot(density(o1$rowsum), main = "Density plot for subgroup", sub = "1 interview"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o1$rowsum)); options(scipen = 5)
+plot(density(o2$rowsum), main = "Density plot for subgroup", sub = "2 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o2$rowsum)); options(scipen = 5)
+plot(density(o3$rowsum), main = "Density plot for subgroup", sub = "3 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o3$rowsum)); options(scipen = 5)
+plot(density(o4$rowsum), main = "Density plot for subgroup", sub = "4 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o4$rowsum)); options(scipen = 5)
+plot(density(o5$rowsum), main = "Density plot for subgroup", sub = "5 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o5$rowsum)); options(scipen = 5)
+plot(density(o6$rowsum), main = "Density plot for subgroup", sub = "6 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o6$rowsum)); options(scipen = 5)
+plot(density(o7$rowsum), main = "Density plot for subgroup", sub = "7 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o7$rowsum)); options(scipen = 5)
+plot(density(o8$rowsum), main = "Density plot for subgroup", sub = "8 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o8$rowsum)); options(scipen = 5)
+plot(density(o9$rowsum), main = "Density plot for subgroup", sub = "9 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o9$rowsum)); options(scipen = 5)
+plot(density(o10$rowsum), main = "Density plot for subgroup", sub = "10 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o10$rowsum)); options(scipen = 5)
+```
 
-plot(density(o11$rowsum)); options(scipen = 5)
 
-plot(density(o12$rowsum)); options(scipen = 5)
+The same for > 10 interviews per interviewer.
 
-plot(density(o13$rowsum)); options(scipen = 5)
+```{r}
 
-plot(density(o13$rowsum)); options(scipen = 5)
+plot(density(o11$rowsum), main = "Density plot for subgroup", sub = "11 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o14$rowsum)); options(scipen = 5)
+plot(density(o12$rowsum), main = "Density plot for subgroup", sub = "12 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o15$rowsum)); options(scipen = 5)
+plot(density(o13$rowsum), main = "Density plot for subgroup", sub = "13 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o17$rowsum)); options(scipen = 5)
+plot(density(o14$rowsum), main = "Density plot for subgroup", sub = "14 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o18$rowsum)); options(scipen = 5)
+plot(density(o15$rowsum), main = "Density plot for subgroup", sub = "15 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o20$rowsum)); options(scipen = 5)
+plot(density(o17$rowsum), main = "Density plot for subgroup", sub = "17 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o21$rowsum)); options(scipen = 5)
+plot(density(o18$rowsum), main = "Density plot for subgroup", sub = "18 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o22$rowsum)); options(scipen = 5)
+plot(density(o20$rowsum), main = "Density plot for subgroup", sub = "20 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 
-plot(density(o27$rowsum)); options(scipen = 5)
+plot(density(o21$rowsum), main = "Density plot for subgroup", sub = "21 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
+
+plot(density(o22$rowsum), main = "Density plot for subgroup", sub = "22 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
+
+plot(density(o27$rowsum), main = "Density plot for subgroup", sub = "27 interviews"); lines(density(SP2), 
+                   col= "grey",
+                   lwd=2); abline(v= c(6095457, 21768888, 37442319),
+                               col = "black", 
+                               lwd = 3, 
+                               lty = "dashed"
+                               ); abline(v= c(6148390, 21782407, 37416424),
+                               col = "grey", 
+                               lwd = 3, 
+                               lty = "dotted"
+                               ); legend("topright", 
+                                         legend= c("sample", "resample"), 
+                                         fill = c("black", "grey"), 
+                                         bty = "n"
+                                         )
 ```
 
