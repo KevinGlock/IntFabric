@@ -399,7 +399,7 @@ library(haven)  # read_por</code></pre>
   ) # data on respondents
 
 dim(resp) # 1685 entries and 566 variables</code></pre>
-<p>#load respondents data</p>
+
 <p>Get the data on interviewers.</p>
 <pre class="r"><code>int &lt;- read_por(&quot;D:/IntFabric/data/ESS1cfHU.por&quot;  # please specify the directory
 )  # data on interviewers
@@ -566,7 +566,7 @@ calc2 &lt;- cbind(anew[, c(&quot;idno&quot;, &quot;INTNUM1&quot;, &quot;INTNUM2&
 dim(calc2)  # like before 1685 obs on 557 vars
 head(calc2)</code></pre>
 <p>How many interviews per interviewer?</p>
-<p>The calculation can be found in the xlsx table in the annex.</p>
+
 <pre class="r"><code>sort(table(calc2[, 3]))  # 25 interviews by IntNum 2
 sort(table(calc2[, 4]))  # 0 interviews by IntNum 3
 sort(table(calc2[, 2]))  # 1685-25 = 1660 interviews by IntNum 1
