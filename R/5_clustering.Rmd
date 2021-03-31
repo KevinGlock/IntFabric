@@ -65,7 +65,7 @@ Intnum_count_each2 <- Intnum_count_each %>%
 
 head(Intnum_count_each2, n = 5)
 
-Intnum_count <- Intnum_count_each2[, -c(3)] %>% 
+Intnum_count_each3 <- Intnum_count_each2[, -c(3)] %>% 
   group_by(INTNUM1, count) %>%
   mutate(count = n()
          ) # grouping and erase irrelevant var
@@ -87,7 +87,7 @@ rowsum_by_idno_intnum <- calc6 %>%
   mutate(count = n()
          ); head(rowsum_by_idno_intnum, n = 5)
 
-rowsum_by_idno_intnum2 <- rowsum_by_idno_intnum[, -c(2, 4)] # one dataset with only the idno and rowsum
+rowsum_by_idno_intnum2 <- rowsum_by_idno_intnum[, -2] # one dataset with only the idno and rowsum
 head(rowsum_by_idno_intnum2, n = 5)
 ```
 
@@ -96,131 +96,159 @@ Create new subsets based on the number of interviews an interviewer had to compa
 
 ```{r}
 
-o1 <- rowsum_by_idno_intnum %>% 
-  subset(count==1); o1 <- o1[,-4]
+o1 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==1); o1 <- o1[,-3]
 
 o1 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o1)
 
-o2 <- rowsum_by_idno_intnum %>% 
-  subset(count== 2); o2 <- o2[,-4]
+o2 <- rowsum_by_idno_intnum2 %>% 
+  subset(count== 2); o2 <- o2[,-3]
 
 o2 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o2)
 
-o3 <- rowsum_by_idno_intnum %>% 
-  subset(count== 3); o3 <- o3[,-4]
+o3 <- rowsum_by_idno_intnum2 %>% 
+  subset(count== 3); o3 <- o3[,-3]
 
 o3 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o3)
 
-o4 <- rowsum_by_idno_intnum %>% 
-  subset(count==4); o4 <- o4[,-4]
+o4 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==4); o4 <- o4[,-3]
 
 o4 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o4)
 
-o5 <- rowsum_by_idno_intnum %>% 
-  subset(count==5); o5 <- o5[,-4]
+o5 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==5); o5 <- o5[,-3]
 
 o5 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o5)
 
-o6 <- rowsum_by_idno_intnum %>% 
-  subset(count==6); o6 <- o6[,-4]
+o6 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==6); o6 <- o6[,-3]
 
 o6 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o6)
 
-o7 <- rowsum_by_idno_intnum %>% 
-  subset(count==7); o7 <- o7[,-4]
+o7 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==7); o7 <- o7[,-3]
 
 o7 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o7)
 
-o8 <- rowsum_by_idno_intnum %>% 
-  subset(count==8); o8 <-  o8[,-4]
+o8 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==8); o8 <-  o8[,-3]
 
 o8 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o8)
 
-o9 <- rowsum_by_idno_intnum %>% 
-  subset(count==9); o9 <- o9[,-4]
+o9 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==9); o9 <- o9[,-3]
 
 o9 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o9)
 
-o10 <- rowsum_by_idno_intnum %>% 
-  subset(count==10); o10 <- o10[,-4]
+o10 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==10); o10 <- o10[,-3]
 
 o10 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o10)
 
-o11 <- rowsum_by_idno_intnum %>% 
-  subset(count==11); o11 <- o11[,-4]
+o11 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==11); o11 <- o11[,-3]
 
 o11 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o11)
 
-o12 <- rowsum_by_idno_intnum %>% 
-  subset(count==12); o12 <- o12[,-4]
+o12 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==12); o12 <- o12[,-3]
 
 o12 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o12)
 
-o13 <- rowsum_by_idno_intnum %>% 
-  subset(count==13); o13 <- o13[,-4]
+# o13 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==13); o13 <- o13[,-3] # nur eine Person hat 13 Interviews
 
-o13 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# o13 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o13)
 
-o14 <- rowsum_by_idno_intnum %>% 
-  subset(count==14); o14 <- o14[,-4]
+o14 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==14); o14 <- o14[,-3]
 
 o14 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o14)
 
-o15 <- rowsum_by_idno_intnum %>% 
-  subset(count==15); o15 <- o15[,-4]
+o15 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==15); o15 <- o15[,-3]
 
 o15 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o15)
 
-o17 <- rowsum_by_idno_intnum %>% 
-  subset(count==17); o17 <- o17[,-4]
+o16 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==16); o16 <- o16[,-3]
 
-o17 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+o16 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+#head(o16)
+
+# o17 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==17); o17 <- o17[,-3] # nur 2 Personen haben 17 Interviews
+
+# o17 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o17)
 
-o18 <- rowsum_by_idno_intnum %>% 
-  subset(count==18); o18 <- o18[,-4]
+# o18 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==18); o18 <- o18[,-3] # nur eine Person hat 18 Interviews
 
-o18 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# o18 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o18)
 
-o20 <- rowsum_by_idno_intnum %>% 
-  subset(count==20); o20 <- o20[,-4]
+# o19 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==19); o19 <- o19[,-3] # nur eine Person hat 19 Interviews
 
-o20 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# o19 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+#head(o19)
+
+# o20 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==20); o20 <- o20[,-3] # nur eine Person hat 20 Interviews
+
+# o20 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o20)
 
-o21 <- rowsum_by_idno_intnum %>% 
-  subset(count==21); o21 <- o21[,-4]
+# o21 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==21); o21 <- o21[,-3] # nur eine Person hat 21 Interviews
 
-o21 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+# o21 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o21)
 
-o22 <- rowsum_by_idno_intnum %>% 
-  subset(count==22); o22 <- o22[,-4]
+o22 <- rowsum_by_idno_intnum2 %>% 
+  subset(count==22); o22 <- o22[,-3]
 
 o22 %>% mutate_each_(funs(scale), vars=c("rowsum"))
 #head(o22)
 
-o27 <- rowsum_by_idno_intnum %>% 
-  subset(count==27); o27 <- o27[,-4]
+# Interviewer mit 23, 24, 25 Interviews sind nicht vorhanden
 
-o27 %>% mutate_each_(funs(scale), vars=c("rowsum"))
-#head(o27)
+# o26 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==26); o26 <- o26[,-3] # nur eine Person hat 26 Interviews
+
+# o26 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+#head(o26)
+
+# Interviewer mit 27, 28 Interviews sind nicht vorhanden
+
+# o29 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==29); o29 <- o29[,-3] # nur eine Person hat 29 Interviews
+
+# o29 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+#head(o29)
+
+# o30 <- rowsum_by_idno_intnum2 %>% 
+#  subset(count==30); o30 <- o30[,-3] # nur eine Person hat 30 Interviews
+
+# o30 %>% mutate_each_(funs(scale), vars=c("rowsum"))
+#head(o30)
 ```
 
 
@@ -232,7 +260,7 @@ Create distant matrices.
 ```{r}
 ## with all interviews
 
-dist.fun0 <-dist(rowsum_by_idno_intnum, method="euclidean")
+dist.fun0 <-dist(calc4, method="euclidean")
 
 
 ## only with one interview
@@ -297,7 +325,7 @@ dist.fun12 <-dist(o12, method="euclidean")
 
 ## only with thirteen interviews
 
-dist.fun13 <-dist(o13, method="euclidean")
+#dist.fun13 <-dist(o13, method="euclidean")
 
 
 ## only with fourteen interviews
@@ -310,24 +338,34 @@ dist.fun14 <-dist(o14, method="euclidean")
 dist.fun15 <-dist(o15, method="euclidean")
 
 
+## only with sixteen interviews
+
+dist.fun16 <-dist(o16, method="euclidean")
+
+
 ## only with seventeen interviews
 
-dist.fun17 <-dist(o17, method="euclidean")
+#dist.fun17 <-dist(o17, method="euclidean")
 
 
 ## only with eighteen interviews
 
-dist.fun18 <-dist(o18, method="euclidean")
+#dist.fun18 <-dist(o18, method="euclidean")
+
+
+## only with nineteen interviews
+
+#dist.fun19 <-dist(o19, method="euclidean")
 
 
 ## only with twenty interviews
 
-dist.fun20 <-dist(o20, method="euclidean")
+#dist.fun20 <-dist(o20, method="euclidean")
 
 
 ## only with twenty-one interviews
 
-dist.fun21 <-dist(o21, method="euclidean")
+#dist.fun21 <-dist(o21, method="euclidean")
 
 
 ## only with twenty-two interviews
@@ -335,9 +373,25 @@ dist.fun21 <-dist(o21, method="euclidean")
 dist.fun22 <-dist(o22, method="euclidean")
 
 
-## only with twenty-seven interviews
+# 23, 24, 25 are non existent
 
-dist.fun27 <-dist(o27, method="euclidean")
+
+## only with twenty-six interviews
+
+#dist.fun26 <-dist(o26, method="euclidean")
+
+
+# 28, 29 are non existent
+
+
+## only with twenty-nine interviews
+
+#dist.fun29 <-dist(o29, method="euclidean")
+
+
+## only with thirty interviews
+
+#dist.fun30 <-dist(o30, method="euclidean")
 ```
 
 
@@ -459,32 +513,46 @@ fit.15 <-hclust(dist.fun15, method = "single")
 fit15.2 <-hclust(dist.fun15, method = "ward.D2")
 
 
+## only with sixteen interviews
+
+fit.16 <-hclust(dist.fun16, method = "single")
+
+fit16.2 <-hclust(dist.fun16, method = "ward.D2")
+
+
 ## only with seventeen interviews
 
-fit.17 <-hclust(dist.fun17, method = "single")
+#fit.17 <-hclust(dist.fun17, method = "single")
 
-fit17.2 <-hclust(dist.fun17, method = "ward.D2")
+#fit17.2 <-hclust(dist.fun17, method = "ward.D2")
 
 
 ## only with eighteen interviews
 
-fit.18 <-hclust(dist.fun18, method = "single")
+#fit.18 <-hclust(dist.fun18, method = "single")
 
-fit18.2 <-hclust(dist.fun18, method = "ward.D2")
+#fit18.2 <-hclust(dist.fun18, method = "ward.D2")
+
+
+## only with nineteen interviews
+
+#fit.19 <-hclust(dist.fun19, method = "single")
+
+#fit19.2 <-hclust(dist.fun19, method = "ward.D2")
 
 
 ## only with twenty interviews
 
-fit.20 <-hclust(dist.fun20, method = "single")
+#fit.20 <-hclust(dist.fun20, method = "single")
 
-fit20.2 <-hclust(dist.fun20, method = "ward.D2")
+#fit20.2 <-hclust(dist.fun20, method = "ward.D2")
 
 
 ## only with twenty-one interviews
 
-fit.21 <-hclust(dist.fun21, method = "single")
+#fit.21 <-hclust(dist.fun21, method = "single")
 
-fit21.2 <-hclust(dist.fun21, method = "ward.D2")
+#fit21.2 <-hclust(dist.fun21, method = "ward.D2")
 
 
 ## only with twenty-two interviews
@@ -494,11 +562,25 @@ fit.22 <-hclust(dist.fun22, method = "single")
 fit22.2 <-hclust(dist.fun22, method = "ward.D2")
 
 
-## only with twenty-seven interviews
+## only with twenty-six interviews
 
-fit.27 <-hclust(dist.fun27, method = "single")
+#fit.26 <-hclust(dist.fun26, method = "single")
 
-fit27.2 <-hclust(dist.fun27, method = "ward.D2")
+#fit26.2 <-hclust(dist.fun26, method = "ward.D2")
+
+
+## only with twenty-nine interviews
+
+#fit.29 <-hclust(dist.fun29, method = "single")
+
+#fit29.2 <-hclust(dist.fun29, method = "ward.D2")
+
+
+## only with thirty interviews
+
+#fit.30 <-hclust(dist.fun30, method = "single")
+
+#fit30.2 <-hclust(dist.fun30, method = "ward.D2")
 ```
 
 
@@ -508,7 +590,7 @@ fit27.2 <-hclust(dist.fun27, method = "ward.D2")
 ```{r}
 #Dendograms
 
-plot(fit.0, labels=rowsum_by_idno_intnum$INTNUM1, cex=0.6); options(scipen = 5)
+plot(fit.0, labels=calc4$INTNUM1, cex=0.6); options(scipen = 5)
 plot(fit0.2, labels=rowsum_by_idno_intnum$INTNUM1, cex=0.6); options(scipen = 5)
 
 plot(fit.1, labels=o1$idno, cex=0.6); options(scipen = 5)
@@ -555,6 +637,9 @@ plot(fit14.2, labels=o14$idno, cex=0.6); options(scipen = 5)
 
 plot(fit.15, labels=o15$idno, cex=0.6); options(scipen = 5)
 plot(fit15.2, labels=o15$idno, cex=0.6); options(scipen = 5)
+
+plot(fit.16, labels=o16$idno, cex=0.6); options(scipen = 5)
+plot(fit16.2, labels=o16$idno, cex=0.6); options(scipen = 5)
 
 plot(fit.17, labels=o17$idno, cex=0.6); options(scipen = 5)
 plot(fit17.2, labels=o17$idno, cex=0.6); options(scipen = 5)

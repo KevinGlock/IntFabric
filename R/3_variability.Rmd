@@ -46,7 +46,7 @@ dim(mergeddata)
 
 anew <- subset.data.frame(mergeddata,
                           select = -c(3,5,7)) %>% 
-  group_by(idno, INTNUM1) # sort it by interviewer and match each interview
+  group_by(idno, INTNUM1) # sort it by interviewer one and match each interview
 
 head(anew) 
 
@@ -112,9 +112,26 @@ calc2 <- cbind(
 
 dim(calc2) # like before 1685 obs on 557 vars
 head(calc2)
+```
+  
+
+How many interviews per interviewer?
+
+The calculation can be found in the xlsx table in the annex.
+
+```{r}
+sort(table(calc2[, 3])) # 25 interviews by IntNum 2
+sort(table(calc2[, 4])) # 0 interviews by IntNum 3
+sort(table(calc2[, 2])) # 1685-25 = 1660 interviews by IntNum 1
+length(unique(calc2$INTNUM1))
+length(unique(calc2$INTNUM2))
+```
+
+
+```{r}
 
 calc3 <- calc2 %>% 
-  group_by(INTNUM1, INTNUM2, INTNUM3) %>% 
+  group_by(INTNUM1, INTNUM2) %>% 
   summarise(.groups = "keep", 
             across(.cols = 5:554,
                    .fns = sum
@@ -123,7 +140,7 @@ calc3 <- calc2 %>%
 
 rm(list = c("anew", "bnew", "cnew"))
 
-dim(calc3) # 208 obs because of grouping by INTNUM1-3 and 553 vars
+dim(calc3) # 208 unique interviewer because of grouping by INTNUM1-2 and 552 vars
 head(calc3)
 ```
 
@@ -135,8 +152,8 @@ Get the test statistic T (total variability) for the clustered interviewer and f
 
 ```{r}
 calc4 <- cbind.data.frame(
-  calc3[c("INTNUM1", "INTNUM2", "INTNUM3")],
-  rowsum = rowSums(calc3[4:553])
+  calc3[c("INTNUM1", "INTNUM2")],
+  rowsum = rowSums(calc3[3:552])
   ) # create a new object containing the INTNUMs and the total variability aggregated by INTNUMs
 
 sort.calc4 <- calc4[order(calc4$rowsum) ,] # resort it by the rowsums to get ascending values of the variabilities
@@ -146,8 +163,11 @@ head(sort.calc4, n = 5)
 plot(density(calc4$rowsum)
      ); options(scipen=5) # the density of variability over all interviewers
 
-sd(calc4$rowsum) # 119066864
-mean(calc4$rowsum) # 176699700
+sd(calc4$rowsum) # 119066901
+mean(calc4$rowsum) # 176699764
+
+# 176699764-119066901=57632863
+# 176699764+119066901=295766665
 
 sort(table(calc4$INTNUM1)
      ) # we can see that some are double or triple this is because they are re-issued by a second and third person
@@ -185,4 +205,7 @@ sort.calc6 <- calc6[order(calc6$rowsum) ,] # now sorted by rowsums not by respon
 
 head(sort.calc6, n = 5) # lowest value 2352503 for interview 2308; keep in mind that this are seperated interview values not aggregated
 tail(sort.calc6, n = 5) # highest value 104602583 for interview 2089
+
+write.csv2(calc6, "data.csv")
+getwd()
 ```

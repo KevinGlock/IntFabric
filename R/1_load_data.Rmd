@@ -3,10 +3,11 @@ title: "Load Data"
 author: "Kevin Glock"
 date: "28 01 2021"
 output:
+  word_document: default
+  toc_depth: 2
+  number_sections: yes
   html_document:
     highlight: textmate
-  toc_depth: 2
-  number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -45,7 +46,6 @@ These libraries are used for the analysis.
 library(foreign) # read.spss
 library(dplyr) # using pipes
 library(haven) # read_por
-library(DT) # interctive datatable
 ```
 
 
@@ -57,7 +57,7 @@ Get the data on respondents.
 
 ```{r resp data}
 resp <- read.spss(
-  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1HU.sav",
+  "D:/IntFabric1/data/ESS1HU.sav", # please specify the directory
                   to.data.frame=T, 
                   use.value.labels = F
   ) # data on respondents
@@ -74,7 +74,7 @@ Get the data on interviewers.
 
 ```{r int data}
 int <- read_por(
-  "C:/Users/k_glo/Desktop/Kevin/Uni Unterlagen/2_Arbeitsmaterialien/2_Master/1. Fachsemester/1_DataCol_n_Error/12_Hausarbeit/data/ESS1cfHU.por"
+  "D:/IntFabric1/data/ESS1cfHU.por" # please specify the directory
   ) # data on interviewers
 
 dim(int) # 2484 entries and 176 variables

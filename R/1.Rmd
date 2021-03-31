@@ -1,0 +1,607 @@
+---
+title: "Falsified Interviews"
+author: "Kevin Glock"
+date: "30 03 2021"
+output:
+  html_document:
+    highlight: textmate
+  toc_depth: 2
+  number_sections: yes
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+    echo = TRUE,
+      include = TRUE,
+    eval = TRUE,
+  message = FALSE,
+    results = 'hide',
+      tidy = TRUE,
+    tidy.opts = list(
+      width.cutoff=60
+      )
+    )
+
+#eval whether to evaluate the chunk
+#echo whether to echo source code
+#results 'markup', 'asis', 'hold', 'hide'
+#tidy whether to reformat R code
+#cache whether to cache results
+#g.width, g.height, out.width, out.height device and output size of gures
+#include whether to include the chunk results in output
+#child lenames of child documents
+#engine language name (R, python, . . . )
+```
+
+
+
+# required libraries
+
+
+These libraries are used for the analysis.
+
+```{r packages}
+library(foreign) # read.spss
+library(dplyr) # using pipes
+library(haven) # read_por
+```
+
+
+
+# load respondents data
+
+
+Get the data on respondents.
+
+```{r resp data}
+resp <- read.spss(
+  "D:/IntFabric/data/ESS1HU.sav", # please specify the directory
+                  to.data.frame=T, 
+                  use.value.labels = F
+  ) # data on respondents
+
+dim(resp) # 1685 entries and 566 variables
+```
+
+
+
+#load respondents data
+
+
+Get the data on interviewers.
+
+```{r int data}
+int <- read_por(
+  "D:/IntFabric/data/ESS1cfHU.por" # please specify the directory
+  ) # data on interviewers
+
+dim(int) # 2484 entries and 176 variables
+```
+
+# merge data
+
+Get rid of not used variables and merge the sets to a new merged subset.
+
+```{r}
+data1 <- subset.data.frame(
+  resp,
+  select = -c(
+    name,
+      essround,
+        edition,
+      proddate,
+    cntry,
+      pweight,
+    pspwght,
+      dweight,
+        ctzship,
+      cntbrth,
+    lnghoma,
+      lnghomb
+    )
+  ) # remove irrelevant and character variables
+
+dim(data1) # 1685 entries and 554 variables
+
+data2 <- subset.data.frame(
+  int,
+  select = c(
+    IDNO,
+      INTNUM1,
+        INTNUM2,
+      INTNUM3,
+    TOTCINT1,
+      TOTCINT2,
+        TOTCINT3
+    )
+  ); dim(data2) # 2484 entries and 7 variables
+
+mergeddata <- merge(
+  data1,
+  data2,
+  by.x="idno",
+  by.y = "IDNO",
+  sort= T,
+  no.dups = F
+  )
+
+mergeddata <- mergeddata %>%
+  select(
+    idno,
+    INTNUM1,
+    TOTCINT1,
+    INTNUM2,
+    TOTCINT2,
+    INTNUM3,
+    TOTCINT3,
+    everything()
+    ); dim(mergeddata) # 1685 entries and 560 variables
+
+head(mergeddata, n=10)
+```
+
+
+# Methodological infos on dataset
+
+
+Total non response rate.
+
+```{r}
+2484-1685 #=799
+
+(799*100)/2484 #=32.17 %
+1-0.3217 # 67.83 %
+(1685/2484)*100 # 67.83%
+```
+
+
+How many interviewer?
+
+```{r}
+unique(int$INTNUM1) # 198 unique interviewer who started first contact (one NA)
+unique(int$INTNUM2) # 19 (one NA)
+unique(int$INTNUM3) # 2 (one NA)
+
+
+sum(table(int$INTNUM1))
+# 2461 first contacts
+# 2484-2461=23 NAs
+
+sum(table(int$INTNUM2)) # 35 re-issues
+sum(table(int$INTNUM3)) # 4 re-issues
+
+table(int$TOTCINT1)
+table(int$TOTCINT2)
+table(int$TOTCINT3)
+
+
+# 436+224+124+45+7+2=838
+# 436+224+124+45+937=1766
+
+rm(list = c("resp", "int"))
+```
+
+
+How many total contacts being made by the interviews?
+
+```{r}
+data5.0 <- mergeddata %>% subset(mergeddata$TOTCINT1==0)
+data5.1 <- mergeddata %>% subset(mergeddata$TOTCINT1==1)
+data5.2 <- mergeddata %>% subset(mergeddata$TOTCINT1==2)
+data5.3 <- mergeddata %>% subset(mergeddata$TOTCINT1==3)
+data5.4 <- mergeddata %>% subset(mergeddata$TOTCINT1==4)
+data5.5 <- mergeddata %>% subset(mergeddata$TOTCINT1==5)
+data5.6 <- mergeddata %>% subset(mergeddata$TOTCINT1==6)
+data5.7 <- mergeddata %>% subset(mergeddata$TOTCINT1==7)
+data5.8 <- mergeddata %>% subset(mergeddata$TOTCINT1==8)
+data5.9 <- mergeddata %>% subset(mergeddata$TOTCINT1==9)
+data5.10 <- mergeddata %>% subset(mergeddata$TOTCINT1==10)
+
+dim(data5.0) # 689 for all desired interviews resp. 513 for all performed interview
+dim(data5.1) # 436 resp. 336
+dim(data5.2) # 224 resp. 147
+dim(data5.3) # 124 resp. 69
+dim(data5.4) # 45 resp. 20
+dim(data5.5) # 16 resp. 7
+dim(data5.6) # 8 resp. 2
+dim(data5.7) # 2 resp. 1
+dim(data5.8) # 1 resp. 0
+dim(data5.9) # 2 resp. 0
+dim(data5.10)# 0 resp. 0
+
+data5.0.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==0)
+data5.1.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==1)
+data5.2.1 <- mergeddata %>% subset(mergeddata$TOTCINT2==2)
+
+dim(data5.0.1) # 7 resp. 7
+dim(data5.1.1) # 4 resp. 4
+dim(data5.2.1) # 0 resp. 0
+
+data5.0.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==0)
+data5.1.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==1)
+data5.2.2 <- mergeddata %>% subset(mergeddata$TOTCINT3==2)
+
+dim(data5.0.2) # 1 resp. 1
+dim(data5.1.2) # 1 resp. 0
+dim(data5.2.1) # 0 resp. 0
+
+rm(list = c("data5.0", "data5.1", "data5.2", "data5.3", "data5.4", "data5.5", "data5.6", "data5.7", "data5.8", "data5.9", "data5.10", "data5.0.1", "data5.1.1", "data5.2.1", "data5.3.1", "data5.4.1", "data5.5.1", "data5.6.1", "data5.7.1", "data5.8.1", "data5.9.1", "data5.10.1", "data5.0.2", "data5.1.2", "data5.2.2"))
+```
+
+
+## methodological subset infos
+
+
+How many interviewer?
+
+```{r}
+length(unique(mergeddata[,"INTNUM1"])) # 193 interviewers
+unique(mergeddata[,"INTNUM2"]) # 15 interviewers (plus one NA)
+unique(mergeddata[,"INTNUM3"]) # 0 interviewer (plus one NA)
+# 193+15=208 interviewers
+```
+
+# variability approach
+
+
+For the variability approach in the first step the variance for each interviewer and every question is calculated and summed up.
+The difference between each observation for a question by interviewer and the mean of the question will provide a t-statistic which can be tested against a resampled distribution.
+
+```{r}
+dim(mergeddata)
+
+anew <- subset.data.frame(mergeddata,
+                          select = -c(3,5,7)) %>% 
+  group_by(idno, INTNUM1) # sort it by interviewer one and match each interview
+
+head(anew) 
+
+anew[is.na(anew)] <-0 # All NAs should be 0 because of calculations
+
+dim(anew)
+head(anew) # Now the data is tidy; 1685 obs on 557 var
+```
+
+
+## calculate the means
+
+
+Pay attention for 1685 entries, 557 total columns but idno and INTNUM1-3 should not be includes.
+
+```{r}
+bnew <- anew[,c(5:557)] %>% 
+  colMeans() %>% 
+  rbind.data.frame()
+
+names(bnew) <- colnames(anew[5:557])
+
+head(bnew) # now we have the mean values for every variable
+
+bnew <- bnew[rep(
+  seq_len(
+    ncol(bnew)
+    ), 
+  each = 1685), ] # each must be adapted
+
+head(bnew, n = 5)
+tail(bnew, n = 5)
+
+bnew <- bnew[-c(1686:nrow(bnew)), ] # make sure there are no redundant rows
+
+nrow(bnew) # 1685
+
+# now we have a df with all means for every variable for each observation
+# we have to apply the calculation for each observation
+
+head(anew)
+
+cnew <- anew[,-(1:4)] # we have to remove idno and INTNUM1-3 to make rowwise calculations in the next step
+
+dim(cnew) # stated values for each interview; 1685 obs and 553 vars
+dim(bnew) # mean for each question; 1685 obs and 553 vars
+
+```
+
+
+## calculate variabilities
+
+
+Variability for each question over each interview
+
+```{r}
+calc <- (cnew-bnew)^2
+head(calc)
+
+calc2 <- cbind(
+  anew[,c("idno","INTNUM1", "INTNUM2", "INTNUM3")], calc
+  )
+
+dim(calc2) # like before 1685 obs on 557 vars
+head(calc2)
+```
+  
+
+How many interviews per interviewer?
+
+The calculation can be found in the xlsx table in the annex.
+
+```{r}
+sort(table(calc2[, 3])) # 25 interviews by IntNum 2
+sort(table(calc2[, 4])) # 0 interviews by IntNum 3
+sort(table(calc2[, 2])) # 1685-25 = 1660 interviews by IntNum 1
+length(unique(calc2$INTNUM1))
+length(unique(calc2$INTNUM2))
+```
+
+
+```{r}
+
+calc3 <- calc2 %>% 
+  group_by(INTNUM1, INTNUM2) %>% 
+  summarise(.groups = "keep", 
+            across(.cols = 5:554,
+                   .fns = sum
+                   )
+            ) # sum up for each interviewer over all questions
+
+rm(list = c("anew", "bnew", "cnew"))
+
+dim(calc3) # 208 unique interviewer because of grouping by INTNUM1-2 and 552 vars
+head(calc3)
+```
+
+
+## get the test statistic T
+
+
+Get the test statistic T (total variability) for the clustered interviewer and for the whole survey.
+
+```{r}
+calc4 <- cbind.data.frame(
+  calc3[c("INTNUM1", "INTNUM2")],
+  rowsum = rowSums(calc3[3:552])
+  ) # create a new object containing the INTNUMs and the total variability aggregated by INTNUMs
+
+sort.calc4 <- calc4[order(calc4$rowsum) ,] # resort it by the rowsums to get ascending values of the variabilities
+
+head(sort.calc4, n = 5) 
+
+plot(density(calc4$rowsum)
+     ); options(scipen=5) # the density of variability over all interviewers
+
+sd(calc4$rowsum) # 119066901
+mean(calc4$rowsum) # 176699764
+
+# 176699764-119066901=57632863
+# 176699764+119066901=295766665
+
+sort(table(calc4$INTNUM1)
+     ) # we can see that some are double or triple this is because they are re-issued by a second and third person
+head(calc4, n = 20) # look on the entries 6 and 7 for example
+
+length(which(sort.calc4$rowsum < 100000000)) # fifty-seven interviews show suspiciously low total variabilities at first sight
+
+head(sort.calc4, n = 5) # lowest value 6044290 for interviewer 2086; keep in mind that this are aggregated values!
+tail(sort.calc4, n = 5) # highest value 599664843 for interviewer 6049
+```
+
+
+## whole dataset
+
+
+Get independent variabilities for the interviews.
+
+```{r}
+calc5 <- cbind(
+  calc2[c("idno", "INTNUM1")], calc
+  ); head(calc5, n = 5)
+
+calc6 <- cbind.data.frame(
+  calc5[c("idno", "INTNUM1")], 
+  rowsum=rowSums(calc5[3:554])
+  ); head(calc6, n = 5)
+
+plot(density(calc6$rowsum)
+     ) # density plot for unique interviews not grouped by interviewers
+
+sd(calc6$rowsum) # 15601634
+mean(calc6$rowsum) #21812202
+
+sort.calc6 <- calc6[order(calc6$rowsum) ,] # now sorted by rowsums not by respondends ID
+
+head(sort.calc6, n = 5) # lowest value 2352503 for interview 2308; keep in mind that this are seperated interview values not aggregated
+tail(sort.calc6, n = 5) # highest value 104602583 for interview 2089
+
+write.csv2(calc6, "data.csv")
+getwd()
+```
+
+
+# resampling
+
+
+Resample from the subset and check of plausibility.
+
+```{r}
+N <- 100000; SP <- sample(calc4$rowsum,
+                          N, 
+                          replace=T
+                          ) # draw a sample of size N=100,000 from the aggregated rowsums
+
+sd(SP) # 119385175
+mean(SP) # 177189578
+# 177189578-119385175=57804403
+# 177189578+119385175=296574753
+
+mean(calc4$rowsum) # 176699764
+sd(calc4$rowsum) # 119066901
+# 176699764-119066901=57632863
+# 176699764+119066901=295766665
+
+plot(density(SP),
+     col ="grey",
+     main = "Plausibilität",
+     xlab= "Totalvariabilität T in Interview-Clustern (gepunktet MW +/- St.Abw.)",
+     lwd=2); lines(density(calc4$rowsum), 
+                   col= "black",
+                   lwd=2); abline(v= c(57804403, 177189578, 296574753),
+                                  col="grey",
+                                  lty="dotted",
+                                  lwd=3); abline(v= c(57632863, 176699764, 295766665),
+                                  col="black",
+                                  lty="dotted",
+                                  lwd=3); legend("topright", legend = c("SP", "Resample"),  fill = c("black", "grey"), bty = "n");
+                                    options(scipen=5) # plot the density of the original rowsums and the resampled ones
+
+
+```
+
+
+Get the densities
+
+```{r}
+dat2 <- data.frame(V1 = calc4$rowsum)
+round(
+  sort(
+    with(dat2, V1/sum(V1))
+    ), digits = 6)
+
+round(
+  cumsum(
+    sort(
+      with(dat2, V1/sum(V1))
+      )
+    ), digits = 6)
+
+length(
+  which(
+    round(cumsum(sort(with(dat2, V1/sum(V1)))), digits = 6) < 0.05)
+  ) # 46 interviewer are on the left side below the lower 5 percent
+```
+
+
+Get the interviewer id and rowsums ordered the same way like the densities.
+Get the number of interviews.
+
+```{r}
+sort.calc4$INTNUM1
+sort.calc4$rowsum
+
+
+```
+
+
+## resample for single interviews
+
+
+```{r}
+N2 <- 100000; SP2 <- sample(
+                      calc6$rowsum,
+                      N2,
+                      replace=T
+                      ) # now sample the same resample for the separated interviews
+
+mean(SP2) # 21768691
+sd(SP2) # 15497107
+# 21768691-15497107=6271584
+# 21768691+15497107=37265798
+
+mean(calc6$rowsum) # 21812202
+sd(calc6$rowsum) # 15601634
+# 21812202-15601634=6210568
+# 21812202+15601634=37413836
+
+
+
+plot(density(SP2),
+     col ="grey",
+     main = "Plausibilität",
+     xlab= "Totalvariabilität T in Einzelinterviews (gepunktet MW +/- St.Abw.)",
+     lwd=2); lines(density(calc6$rowsum),
+                   col= "black",
+                   lwd=2); abline(v= c(6271584, 21768691, 37265798),
+                                  col="grey",
+                                  lty="dotted",
+                                  lwd=3); abline(v= c(6210568, 21812202, 37413836),
+                                  col="black",
+                                  lty="dotted",
+                                  lwd=3); legend("topright", legend = c("SP", "Resample"),  fill = c("black", "grey"), bty = "n");
+                                    options(scipen=5)
+
+dat3 <- data.frame(V1 = calc6$rowsum)
+
+round(
+  sort(
+    with(dat3, V1/sum(V1))
+    ), digits = 6)
+
+round(
+  cumsum(
+    sort(with(dat3, V1/sum(V1)))
+    ), digits = 6)
+
+length(
+  which(
+    round(cumsum(sort(with(dat3, V1/sum(V1)))), digits = 6) < 0.05)
+  ) # 281 interviews are on the left side below the lower 5 percent
+```
+
+
+# qualitative evaluation
+
+
+Get tidy data for clustering.
+Write a csv and extract infos to get an overview of the ranking.
+
+```{r}
+getwd()
+
+write.csv2(sort.calc6, "2sorted_ranking_calc6.csv",sep = ";")
+
+sort(table(mergeddata$INTNUM1))
+head(mergeddata, n = 5)
+
+Intnum_count_each <- mergeddata[,-c(3:length(mergeddata))] %>% 
+  rowwise %>% 
+  mutate(time=list(rep(INTNUM1))) # repeat the INTNUM1 based on its counts
+
+head(Intnum_count_each, n = 5)
+
+length(unique(
+  Intnum_count_each$INTNUM1)
+  ) # 193 unique interviewers
+
+Intnum_count_each2 <- Intnum_count_each %>% 
+  group_by(INTNUM1) %>% 
+  mutate(count = n()
+         ) # put in a occurrence variable
+
+head(Intnum_count_each2, n = 5)
+
+Intnum_count_each3 <- Intnum_count_each2[, -c(3)] %>% 
+  group_by(INTNUM1, count) %>%
+  mutate(count = n()
+         ) # grouping and erase irrelevant var
+
+rm(list = c("Intnum_count_each", "Intnum_count_each2"))
+
+head(Intnum_count_each3, n = 5)
+
+
+rowsum_by_idno_intnum3 <- cbind.data.frame(calc6, Intnum_count_each3[,3])
+
+write.csv2(rowsum_by_idno_intnum3, "data.csv")
+getwd() 
+
+
+hj <- rowsum_by_idno_intnum3[!duplicated(rowsum_by_idno_intnum3$INTNUM1), ]
+write.csv2(hj, "data2.csv")
+
+
+
+hj <- read.csv2("data2.csv", header=T)
+hj <- hj[,-c(6:13)]
+hj2 <- hj[,-c(1,3)]
+```

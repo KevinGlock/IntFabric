@@ -46,19 +46,32 @@ N <- 100000; SP <- sample(calc4$rowsum,
                           replace=T
                           ) # draw a sample of size N=100,000 from the aggregated rowsums
 
-plot(density(calc4$rowsum), 
-     col ="black", 
-     lwd=2); lines(density(SP), 
-                   col= "grey",
-                   lwd=2); abline(v= c(0, 100000000),
+sd(SP) # 119385175
+mean(SP) # 177189578
+# 177189578-119385175=57804403
+# 177189578+119385175=296574753
+
+mean(calc4$rowsum) # 176699764
+sd(calc4$rowsum) # 119066901
+# 176699764-119066901=57632863
+# 176699764+119066901=295766665
+
+plot(density(SP),
+     col ="grey",
+     main = "Plausibilität",
+     xlab= "Totalvariabilität T in Interview-Clustern (gepunktet MW +/- St.Abw.)",
+     lwd=2); lines(density(calc4$rowsum), 
+                   col= "black",
+                   lwd=2); abline(v= c(57804403, 177189578, 296574753),
                                   col="grey",
                                   lty="dotted",
-                                  lwd=3); options(scipen=5) # plot the density of the original rowsums and the resampled ones
+                                  lwd=3); abline(v= c(57632863, 176699764, 295766665),
+                                  col="black",
+                                  lty="dotted",
+                                  lwd=3); legend("topright", legend = c("SP", "Resample"),  fill = c("black", "grey"), bty = "n");
+                                    options(scipen=5) # plot the density of the original rowsums and the resampled ones
 
-mean(SP) # 176815412
-sd(SP) # 118567212
-mean(calc4$rowsum) # 176699700
-sd(calc4$rowsum) # 119066864
+
 ```
 
 
@@ -89,9 +102,10 @@ Get the interviewer id and rowsums ordered the same way like the densities.
 Get the number of interviews.
 
 ```{r}
-#sort.calc4$INTNUM1
-#sort.calc4$rowsum
-#sort(table(calc4$INTNUM1)) # table of interviews per interviewer ID (193 interviewer)
+sort.calc4$INTNUM1
+sort.calc4$rowsum
+
+
 ```
 
 
@@ -105,14 +119,32 @@ N2 <- 100000; SP2 <- sample(
                       replace=T
                       ) # now sample the same resample for the separated interviews
 
-plot(density(calc6$rowsum),
-     col ="black",
-     lwd=2); lines(density(SP2),
-                   col= "grey",
-                   lwd=2); abline(v= c(0, 15000000),
+mean(SP2) # 21768691
+sd(SP2) # 15497107
+# 21768691-15497107=6271584
+# 21768691+15497107=37265798
+
+mean(calc6$rowsum) # 21812202
+sd(calc6$rowsum) # 15601634
+# 21812202-15601634=6210568
+# 21812202+15601634=37413836
+
+
+
+plot(density(SP2),
+     col ="grey",
+     main = "Plausibilität",
+     xlab= "Totalvariabilität T in Einzelinterviews (gepunktet MW +/- St.Abw.)",
+     lwd=2); lines(density(calc6$rowsum),
+                   col= "black",
+                   lwd=2); abline(v= c(6271584, 21768691, 37265798),
                                   col="grey",
                                   lty="dotted",
-                                  lwd=3); options(scipen=5)
+                                  lwd=3); abline(v= c(6210568, 21812202, 37413836),
+                                  col="black",
+                                  lty="dotted",
+                                  lwd=3); legend("topright", legend = c("SP", "Resample"),  fill = c("black", "grey"), bty = "n");
+                                    options(scipen=5)
 
 dat3 <- data.frame(V1 = calc6$rowsum)
 

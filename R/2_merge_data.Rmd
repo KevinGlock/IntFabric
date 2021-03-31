@@ -3,10 +3,11 @@ title: "Merge Data"
 author: "Kevin Glock"
 date: "28 01 2021"
 output:
+  word_document: default
+  toc_depth: 2
+  number_sections: yes
   html_document:
     highlight: textmate
-  toc_depth: 2
-  number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -98,25 +99,6 @@ head(mergeddata, n=10)
 ```
 
 
-# Interactive datatable
-
-
-Get an overview.
-
-```{r, results='hold'}
-datatable(
-  mergeddata[-c(20:1685), -c(31:560)],
-    rownames = FALSE,
-    options(list(
-      className = 'dt-center',
-      targets = 4,
-      width = '10' 
-                )
-          )
-        )
-```
-
-
 # Methodological infos on dataset
 
 
@@ -134,9 +116,9 @@ Total non response rate.
 How many interviewer?
 
 ```{r}
-unique(int$INTNUM1) # 199 unique interviewer who started first contact
-unique(int$INTNUM2) # 19
-unique(int$INTNUM3) # 2
+unique(int$INTNUM1) # 198 unique interviewer who started first contact (one NA)
+unique(int$INTNUM2) # 19 (one NA)
+unique(int$INTNUM3) # 2 (one NA)
 
 
 sum(table(int$INTNUM1))
@@ -212,11 +194,13 @@ How many interviewer?
 
 ```{r}
 length(unique(mergeddata[,"INTNUM1"])) # 193 interviewers
-length(unique(mergeddata[,"INTNUM2"])) # 16 interviewers
-length(unique(mergeddata[,"INTNUM3"])) # 1 interviewer
+unique(mergeddata[,"INTNUM2"]) # 15 interviewers (plus one NA)
+unique(mergeddata[,"INTNUM3"]) # 0 interviewer (plus one NA)
+# 193+15=208 interviewers
 ```
 
 
+Question types
 
 ```{r, echo=F, warning= F, eval = F, message = F}
 ##Meinungfragen
